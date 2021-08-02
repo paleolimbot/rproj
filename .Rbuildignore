@@ -1,3 +1,4 @@
 ^rlibproj\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^data-raw$
