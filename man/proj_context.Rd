@@ -2,15 +2,31 @@
 % Please edit documentation in R/context.R
 \name{proj_context}
 \alias{proj_context}
-\title{PROJ Global Context}
+\alias{proj_context_is_network_enabled}
+\alias{proj_context_get_url_endpoint}
+\alias{proj_context_get_use_proj4_init_rules}
+\alias{proj_context_get_user_writable_directory}
+\title{PROJ Context}
 \usage{
 proj_context()
+
+proj_context_is_network_enabled(context = proj_context())
+
+proj_context_get_url_endpoint(context = proj_context())
+
+proj_context_get_use_proj4_init_rules(context = proj_context())
+
+proj_context_get_user_writable_directory(context = proj_context())
+}
+\arguments{
+\item{context}{An external pointer to a \code{\link[=proj_context]{proj_context()}}}
 }
 \value{
-An external pointer to a PROJ context
+An external pointer to a PROJ context.
 }
 \description{
-PROJ Global Context
+The PROJ context object wraps global options. Currently only the default
+context configured via \code{\link[libproj:libproj_version]{libproj::libproj_configure()}} is supported.
 }
 \examples{
 proj_context()
