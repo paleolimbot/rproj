@@ -10,16 +10,16 @@
 \usage{
 proj_context()
 
-proj_context_is_network_enabled(context = proj_context())
+proj_context_is_network_enabled(ctx = proj_context())
 
-proj_context_get_url_endpoint(context = proj_context())
+proj_context_get_url_endpoint(ctx = proj_context())
 
-proj_context_get_use_proj4_init_rules(context = proj_context())
+proj_context_get_use_proj4_init_rules(ctx = proj_context())
 
-proj_context_get_user_writable_directory(context = proj_context())
+proj_context_get_user_writable_directory(ctx = proj_context())
 }
 \arguments{
-\item{context}{An external pointer to a \code{\link[=proj_context]{proj_context()}}}
+\item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
 }
 \value{
 An external pointer to a PROJ context.
