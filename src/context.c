@@ -10,6 +10,23 @@ SEXP proj_c_pj_default_ctx() {
   return context_xptr;
 }
 
+void proj_context_xptr_destroy(SEXP context_xptr) {
+  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  if (context != NULL) {
+    proj_context_destroy(context);
+  }
+}
+
+SEXP proj_c_context_clone(SEXP context_xptr) {
+  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  PJ_CONTEXT* ctx_clone = proj_context_clone(context);
+  SEXP ctx_clone_xptr = PROTECT(R_MakeExternalPtr(ctx_clone, R_NilValue, R_NilValue));
+  R_RegisterCFinalizer(ctx_clone_xptr, &proj_context_xptr_destroy);
+  Rf_setAttrib(ctx_clone_xptr, R_ClassSymbol, Rf_mkString("rlibproj_context"));
+  UNPROTECT(1);
+  return ctx_clone_xptr;
+}
+
 SEXP proj_c_context_is_network_enabled(SEXP context_xptr) {
   PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
   int value = proj_context_is_network_enabled(context);

@@ -2,6 +2,8 @@
 % Please edit documentation in R/context.R
 \name{proj_context}
 \alias{proj_context}
+\alias{proj_context_create}
+\alias{proj_context_clone}
 \alias{proj_context_is_network_enabled}
 \alias{proj_context_get_url_endpoint}
 \alias{proj_context_get_use_proj4_init_rules}
@@ -9,6 +11,17 @@
 \title{PROJ Context}
 \usage{
 proj_context()
+
+proj_context_create(
+  search_path = NULL,
+  db_path = NULL,
+  ca_bundle_path = NULL,
+  network_endpoint = NULL,
+  network_enabled = NULL,
+  ctx = NULL
+)
+
+proj_context_clone(ctx = proj_context())
 
 proj_context_is_network_enabled(ctx = proj_context())
 
@@ -19,14 +32,35 @@ proj_context_get_use_proj4_init_rules(ctx = proj_context())
 proj_context_get_user_writable_directory(ctx = proj_context())
 }
 \arguments{
+\item{search_path}{A character vector of paths where libproj will
+look for resource files (e.g., gridshift, database, init files).
+Defaults to the internal database and init files distributed
+with the PROJ source.}
+
+\item{db_path}{Independent of \code{search_path}, a character vector of
+SQLite databases that may contain updated or alternative
+coordinate operations from the default proj.db included in this
+package. You must specify at least one database as part of this configuration;
+do not rely on \code{search_path} to find this value for you.}
+
+\item{ca_bundle_path}{A directory that contains the certificate bundle when
+network is enabled. Can be \code{NA}.}
+
+\item{network_endpoint}{A mirror of the PROJ CDN of gridshift files. By default,
+this is set to \url{https://cdn.proj.org}.}
+
+\item{network_enabled}{Whether or not to download gridshift files on the fly.
+This defaults to \code{FALSE}.}
+
 \item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
 }
 \value{
 An external pointer to a PROJ context.
 }
 \description{
-The PROJ context object wraps global options. Currently only the default
-context configured via \code{\link[libproj:libproj_version]{libproj::libproj_configure()}} is supported.
+The PROJ context object wraps global options. The default context is that
+configured via \code{\link[libproj:libproj_version]{libproj::libproj_configure()}} at package load and is not
+affected by subsequent calls to \code{\link[libproj:libproj_version]{libproj::libproj_configure()}}.
 }
 \examples{
 proj_context()
