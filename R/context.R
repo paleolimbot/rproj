@@ -1,4 +1,11 @@
 
+# env to keep our own version of the default context
+# (because our logger is better than the default stderr
+# and because we manage options via multiple contexts not by
+# temporarily configuring the default context)
+proj_context_env <- new.env(parent = emptyenv())
+proj_context_env$ctx <- NULL
+
 #' PROJ Context
 #'
 #' The PROJ context object wraps global options. The default context is that
@@ -15,10 +22,9 @@
 #' proj_context()
 #'
 proj_context <- function() {
-  new_ctx <- .Call(proj_c_pj_default_ctx)
-  attr(new_ctx, "config") <- libproj::libproj_configuration()
-  new_ctx
+  proj_context_env$ctx
 }
+
 
 #' @rdname proj_context
 #' @export

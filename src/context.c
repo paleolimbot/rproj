@@ -11,8 +11,9 @@ void rlibproj_logger_fun(void* data, int level, const char* msg) {
     SEXP logger = (SEXP) data;
 
     // don't swallow more than one error message in case
-    // one of the other ones is important
-    if (VECTOR_ELT(logger, 0) != R_NilValue) {
+    // one of the other ones is important (could also implement
+    // vector of length > 1 here but I think this is rare)
+    if (VECTOR_ELT(logger, 0) == R_NilValue) {
       SEXP err = PROTECT(Rf_allocVector(STRSXP, 1));
       SET_STRING_ELT(err, 0, Rf_mkCharCE(msg, CE_UTF8));
       SET_VECTOR_ELT(logger, 0, err);
