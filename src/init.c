@@ -10,6 +10,7 @@ extern SEXP proj_c_context_is_network_enabled(SEXP context_xptr);
 extern SEXP proj_c_context_get_url_endpoint(SEXP context_xptr);
 extern SEXP proj_c_context_get_user_writable_directory(SEXP context_xptr);
 extern SEXP proj_c_context_get_use_proj4_init_rules(SEXP context_xptr);
+extern SEXP proj_c_context_get_database_path(SEXP context_xptr);
 extern SEXP proj_c_init();
 extern SEXP proj_c_version_build();
 extern SEXP proj_c_xptr_addr(SEXP xptr);
@@ -20,6 +21,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_context_get_url_endpoint", (DL_FUNC) &proj_c_context_get_url_endpoint, 1},
   {"proj_c_context_get_user_writable_directory", (DL_FUNC) &proj_c_context_get_user_writable_directory, 1},
   {"proj_c_context_get_use_proj4_init_rules", (DL_FUNC) &proj_c_context_get_use_proj4_init_rules, 1},
+  {"proj_c_context_get_database_path", (DL_FUNC) &proj_c_context_get_database_path, 1},
   {"proj_c_init", (DL_FUNC) &proj_c_init, 0},
   {"proj_c_version_build", (DL_FUNC) &proj_c_version_build, 0},
   {"proj_c_xptr_addr", (DL_FUNC) &proj_c_xptr_addr, 1},

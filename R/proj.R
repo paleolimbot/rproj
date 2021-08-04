@@ -1,10 +1,16 @@
 
-#' Create PROJ transforms and CRS objects
+#' Create PROJ objects
+#'
+#' In PROJ speak, a "proj" can be a transformation, conversion,
+#' CRS, ellipsoid, datum, or one of a few other types. The
+#' CRS and conversion types are the most common and the
+#' most useful but the other types are also occasionally
+#' useful.
 #'
 #' @param definition A character vector definition. This can be
 #'   a PROJ string, WKT, Authority:Code, or any other format PROJ
 #'   understands.
-#'
+#' @param wkt A well-known text definition of the PROJ object.
 #' @param options Options for instantiating the object by name
 #' @param searched_name A name query
 #' @param approximate_match Use `TRUE` for near matches
@@ -23,7 +29,7 @@ proj_create <- function(definition, ctx = proj_context()) {
 
 #' @rdname proj_create
 #' @export
-proj_create_from_wkt <- function(definition, ctx = proj_context()) {
+proj_create_from_wkt <- function(wkt, ctx = proj_context()) {
 
 }
 
@@ -37,7 +43,7 @@ proj_create_from_name <- function(searched_name, auth_name, types, approximate_m
 
 #' @rdname proj_create
 #' @export
-proj_guess_wkt_dialect <- function(definition, ctx = proj_context()) {
+proj_guess_wkt_dialect <- function(wkt, ctx = proj_context()) {
 
 }
 

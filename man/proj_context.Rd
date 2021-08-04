@@ -8,6 +8,8 @@
 \alias{proj_context_get_url_endpoint}
 \alias{proj_context_get_use_proj4_init_rules}
 \alias{proj_context_get_user_writable_directory}
+\alias{proj_context_get_search_paths}
+\alias{proj_context_get_database_path}
 \title{PROJ Context}
 \usage{
 proj_context()
@@ -30,6 +32,10 @@ proj_context_get_url_endpoint(ctx = proj_context())
 proj_context_get_use_proj4_init_rules(ctx = proj_context())
 
 proj_context_get_user_writable_directory(ctx = proj_context())
+
+proj_context_get_search_paths(ctx = proj_context())
+
+proj_context_get_database_path(ctx = proj_context())
 }
 \arguments{
 \item{search_path}{A character vector of paths where libproj will

@@ -56,3 +56,12 @@ SEXP proj_c_context_get_use_proj4_init_rules(SEXP context_xptr) {
   int value = proj_context_get_use_proj4_init_rules(context, 0);
   return Rf_ScalarLogical(value);
 }
+
+SEXP proj_c_context_get_database_path(SEXP context_xptr) {
+  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  const char* value = proj_context_get_database_path(context);
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(out, 0, Rf_mkCharCE(value, CE_UTF8));
+  UNPROTECT(1);
+  return out;
+}

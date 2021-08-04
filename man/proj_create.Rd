@@ -8,11 +8,11 @@
 \alias{as_proj_proj}
 \alias{as_proj_proj.rlibproj_proj}
 \alias{as_proj_proj.character}
-\title{Create PROJ transforms and CRS objects}
+\title{Create PROJ objects}
 \usage{
 proj_create(definition, ctx = proj_context())
 
-proj_create_from_wkt(definition, ctx = proj_context())
+proj_create_from_wkt(wkt, ctx = proj_context())
 
 proj_create_from_name(
   searched_name,
@@ -24,7 +24,7 @@ proj_create_from_name(
   ctx = proj_context()
 )
 
-proj_guess_wkt_dialect(definition, ctx = proj_context())
+proj_guess_wkt_dialect(wkt, ctx = proj_context())
 
 as_proj_proj(x, ..., ctx = proj_context())
 
@@ -38,6 +38,8 @@ a PROJ string, WKT, Authority:Code, or any other format PROJ
 understands.}
 
 \item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
+
+\item{wkt}{A well-known text definition of the PROJ object.}
 
 \item{searched_name}{A name query}
 
@@ -57,5 +59,9 @@ values of "crs" and "ellipsoid" are probably the most useful.}
 \item{...}{Passed to S3 methods}
 }
 \description{
-Create PROJ transforms and CRS objects
+In PROJ speak, a "proj" can be a transformation, conversion,
+CRS, ellipsoid, datum, or one of a few other types. The
+CRS and conversion types are the most common and the
+most useful but the other types are also occasionally
+useful.
 }

@@ -78,6 +78,18 @@ proj_context_get_user_writable_directory <- function(ctx = proj_context()) {
   .Call(proj_c_context_get_user_writable_directory, ctx)
 }
 
+#' @rdname proj_context
+#' @export
+proj_context_get_search_paths <- function(ctx = proj_context()) {
+  attr(ctx, "config")$search_path
+}
+
+#' @rdname proj_context
+#' @export
+proj_context_get_database_path <- function(ctx = proj_context()) {
+  .Call(proj_c_context_get_database_path, ctx)
+}
+
 #' @export
 format.rlibproj_context <- function(x, ...) {
   sprintf("<proj_context at %s>", proj_xptr_addr(x))
@@ -86,6 +98,16 @@ format.rlibproj_context <- function(x, ...) {
 #' @export
 print.rlibproj_context <- function(x, ...) {
   cat(sprintf("<proj_context at %s>\n", proj_xptr_addr(x)))
+  cat(sprintf("* db: <%s>\n", proj_context_get_database_path(x)))
+
+  search <- proj_context_get_search_paths(x)
+  if (!is.null(search)) {
+    cat("* Search paths:\n")
+    for (s in search) {
+      cat(sprintf("  - <%s>\n", s))
+    }
+  }
+
   cat(sprintf("* User writable directory: <%s>\n", proj_context_get_user_writable_directory(x)))
 
   if (proj_context_is_network_enabled(x)) {
