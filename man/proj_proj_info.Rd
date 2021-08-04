@@ -16,6 +16,7 @@
 \alias{proj_get_target_crs}
 \alias{proj_identify}
 \alias{proj_get_non_deprecated}
+\alias{proj_normalize_for_visualization}
 \title{PROJ object information}
 \usage{
 proj_proj_info(obj)
@@ -52,6 +53,8 @@ proj_get_target_crs(obj)
 proj_identify(obj, auth_name, options = NULL, ctx = proj_context())
 
 proj_get_non_deprecated(obj, ctx = proj_context())
+
+proj_normalize_for_visualization(obj, ctx = proj_context())
 }
 \arguments{
 \item{obj}{A \link[=proj_create]{PROJ object}}

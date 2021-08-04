@@ -24,7 +24,7 @@
 #'
 #' @export
 proj_create <- function(definition, ctx = proj_context()) {
-
+  .Call(proj_c_create, ctx, assert_chr1(definition))
 }
 
 #' @rdname proj_create
@@ -171,5 +171,11 @@ proj_identify <- function(obj, auth_name, options = NULL, ctx = proj_context()) 
 #' @rdname proj_proj_info
 #' @export
 proj_get_non_deprecated <- function(obj, ctx = proj_context()) {
+
+}
+
+#' @rdname proj_proj_info
+#' @export
+proj_normalize_for_visualization <- function(obj, ctx = proj_context()) {
 
 }
