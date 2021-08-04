@@ -4,6 +4,6 @@
   requireNamespace("libproj", quietly = TRUE)
   .Call(proj_c_init)
 
-  # assign the default context
-  proj_context_env$ctx <- proj_context_create()
+  # try to assign the default context
+  proj_context_env$ctx <- try(proj_context_create())
 }
