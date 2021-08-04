@@ -50,19 +50,19 @@ proj_guess_wkt_dialect <- function(wkt, ctx = proj_context()) {
 
 #' @rdname proj_create
 #' @export
-as_proj_proj <- function(x, ..., ctx = proj_context()) {
-  UseMethod("as_proj_proj")
+as_proj <- function(x, ..., ctx = proj_context()) {
+  UseMethod("as_proj")
 }
 
 #' @rdname proj_create
 #' @export
-as_proj_proj.rlibproj_proj <- function(x, ..., ctx = proj_context()) {
+as_proj.rlibproj_proj <- function(x, ..., ctx = proj_context()) {
   x
 }
 
 #' @rdname proj_create
 #' @export
-as_proj_proj.character <- function(x, ..., ctx = proj_context()) {
+as_proj.character <- function(x, ..., ctx = proj_context()) {
   proj_create(x, ctx = ctx)
 }
 
@@ -84,97 +84,97 @@ as_proj_proj.character <- function(x, ..., ctx = proj_context()) {
 #'
 #' @export
 #'
-proj_proj_info <- function(obj) {
-
+proj_info <- function(obj) {
+  new_data_frame(.Call(proj_c_proj_info, as_proj(obj)))
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_get_type <- function(obj) {
-
+  proj_type_name(.Call(proj_c_get_type, as_proj(obj)))
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_is_deprecated <- function(obj) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_is_equivalent_to <- function(obj, other, criterion) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_is_crs <- function(obj) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_get_remarks <- function(obj) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_get_scope <- function(obj) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_get_area_of_use <- function(obj) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_as_wkt <- function(obj, wkt_type = NULL, options = NULL,
                         ctx = proj_context()) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_as_proj_string <- function(obj, proj_string_type = NULL, options = NULL,
                                 ctx = proj_context()) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_as_projjson <- function(obj, options = NULL, ctx = proj_context()) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_get_source_crs <- function(obj) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_get_target_crs <- function(obj) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_identify <- function(obj, auth_name, options = NULL, ctx = proj_context()) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_get_non_deprecated <- function(obj, ctx = proj_context()) {
 
 }
 
-#' @rdname proj_proj_info
+#' @rdname proj_info
 #' @export
 proj_normalize_for_visualization <- function(obj, ctx = proj_context()) {
 

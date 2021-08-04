@@ -5,9 +5,9 @@
 \alias{proj_create_from_wkt}
 \alias{proj_create_from_name}
 \alias{proj_guess_wkt_dialect}
-\alias{as_proj_proj}
-\alias{as_proj_proj.rlibproj_proj}
-\alias{as_proj_proj.character}
+\alias{as_proj}
+\alias{as_proj.rlibproj_proj}
+\alias{as_proj.character}
 \title{Create PROJ objects}
 \usage{
 proj_create(definition, ctx = proj_context())
@@ -26,11 +26,11 @@ proj_create_from_name(
 
 proj_guess_wkt_dialect(wkt, ctx = proj_context())
 
-as_proj_proj(x, ..., ctx = proj_context())
+as_proj(x, ..., ctx = proj_context())
 
-\method{as_proj_proj}{rlibproj_proj}(x, ..., ctx = proj_context())
+\method{as_proj}{rlibproj_proj}(x, ..., ctx = proj_context())
 
-\method{as_proj_proj}{character}(x, ..., ctx = proj_context())
+\method{as_proj}{character}(x, ..., ctx = proj_context())
 }
 \arguments{
 \item{definition}{A character vector definition. This can be
