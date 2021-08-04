@@ -5,7 +5,7 @@
 #' CRS, ellipsoid, datum, or one of a few other types. The
 #' CRS and conversion types are the most common and the
 #' most useful but the other types are also occasionally
-#' useful.
+#' returned.
 #'
 #' @param definition A character vector definition. This can be
 #'   a PROJ string, WKT, Authority:Code, or any other format PROJ

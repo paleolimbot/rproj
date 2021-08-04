@@ -63,5 +63,5 @@ In PROJ speak, a "proj" can be a transformation, conversion,
 CRS, ellipsoid, datum, or one of a few other types. The
 CRS and conversion types are the most common and the
 most useful but the other types are also occasionally
-useful.
+returned.
 }
