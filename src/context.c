@@ -62,6 +62,15 @@ PJ_CONTEXT* rlibproj_ctx_from_xptr(SEXP ctx_xptr) {
     Rf_error("`ctx` must inherit from 'rlibproj_context");
   }
 
+  // technically NULL is OK here in the sense that it's identical
+  // to the default context; however, if this happens it's because
+  // a session was restarted (we never use the default context
+  // except when creating a new one)
+  PJ_CONTEXT* ctx = (PJ_CONTEXT*) R_ExternalPtrAddr(ctx_xptr);
+  if (ctx == NULL) {
+    Rf_error("`ctx` is an external pointer to NULL");
+  }
+
   rlibproj_logger_reset(ctx_xptr);
   return (PJ_CONTEXT*) R_ExternalPtrAddr(ctx_xptr);
 }
@@ -98,7 +107,8 @@ void proj_context_xptr_destroy(SEXP context_xptr) {
 }
 
 SEXP proj_c_context_clone(SEXP context_xptr) {
-  PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
+  // NULL is OK here so we just use the raw address without checking
+  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
 
   PJ_CONTEXT* ctx_clone = proj_context_clone(context);
   if (ctx_clone == NULL) {
