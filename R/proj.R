@@ -179,3 +179,15 @@ proj_get_non_deprecated <- function(obj, ctx = proj_context()) {
 proj_normalize_for_visualization <- function(obj, ctx = proj_context()) {
 
 }
+
+#' @export
+format.rlibproj_proj <- function(x, ...) {
+  sprintf("<proj at %s [%s]>\n", proj_xptr_addr(x), proj_get_type(x))
+}
+
+#' @export
+print.rlibproj_proj <- function(x, ...) {
+  cat(sprintf("<proj at %s [%s]>\n", proj_xptr_addr(x), proj_get_type(x)))
+  cat(sprintf("* Description: %s\n", proj_info(x)$description))
+  invisible(x)
+}

@@ -13,3 +13,9 @@ test_that("proj_get_name() works", {
   expect_identical(proj_get_type("+proj=noop"), "OTHER_COORDINATE_OPERATION")
   expect_identical(proj_get_type("EPSG:4326"), "GEOGRAPHIC_2D_CRS")
 })
+
+test_that("print and format methods work", {
+  expect_match(format(proj_create("+proj=noop")), "<proj")
+  p <- proj_create("+proj=noop")
+  expect_output(expect_identical(print(p), p), "<proj")
+})
