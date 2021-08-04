@@ -2,6 +2,8 @@
 % Please edit documentation in R/context.R
 \name{proj_context}
 \alias{proj_context}
+\alias{proj_set_context}
+\alias{with_proj_context}
 \alias{proj_context_create}
 \alias{proj_context_clone}
 \alias{proj_context_is_network_enabled}
@@ -13,6 +15,10 @@
 \title{PROJ Context}
 \usage{
 proj_context()
+
+proj_set_context(ctx)
+
+with_proj_context(ctx, expr)
 
 proj_context_create(
   search_path = NULL,
@@ -38,6 +44,10 @@ proj_context_get_search_paths(ctx = proj_context())
 proj_context_get_database_path(ctx = proj_context())
 }
 \arguments{
+\item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
+
+\item{expr}{An expression to evaluate in the given context}
+
 \item{search_path}{A character vector of paths where libproj will
 look for resource files (e.g., gridshift, database, init files).
 Defaults to the internal database and init files distributed
@@ -57,8 +67,6 @@ this is set to \url{https://cdn.proj.org}.}
 
 \item{network_enabled}{Whether or not to download gridshift files on the fly.
 This defaults to \code{FALSE}.}
-
-\item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
 }
 \value{
 An external pointer to a PROJ context.

@@ -2,7 +2,7 @@
 # env to keep our own version of the default context
 # (because our logger is better than the default stderr
 # and because we manage options via multiple contexts not by
-# temporarily configuring the default context)
+# temporarily configuring PJ_DEFAULT_CTX)
 proj_context_env <- new.env(parent = emptyenv())
 proj_context_env$ctx <- NULL
 
@@ -13,6 +13,7 @@ proj_context_env$ctx <- NULL
 #' affected by subsequent calls to [libproj::libproj_configure()].
 #'
 #' @param ctx A [proj_context()]
+#' @param expr An expression to evaluate in the given context
 #' @inheritParams libproj::libproj_configuration
 #'
 #' @return An external pointer to a PROJ context.
@@ -25,6 +26,24 @@ proj_context <- function() {
   proj_context_env$ctx
 }
 
+#' @rdname proj_context
+#' @export
+proj_set_context <- function(ctx) {
+  # check context via one of the C accessors
+  proj_context_is_network_enabled()
+
+  previous <- proj_context()
+  proj_context_env$ctx <- ctx
+  invisible(previous)
+}
+
+#' @rdname proj_context
+#' @export
+with_proj_context <- function(ctx, expr) {
+  previous <- proj_set_context(ctx)
+  on.exit(proj_set_context(previous))
+  force(expr)
+}
 
 #' @rdname proj_context
 #' @export

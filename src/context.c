@@ -98,7 +98,7 @@ void proj_context_xptr_destroy(SEXP context_xptr) {
 }
 
 SEXP proj_c_context_clone(SEXP context_xptr) {
-  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
 
   PJ_CONTEXT* ctx_clone = proj_context_clone(context);
   if (ctx_clone == NULL) {
@@ -120,13 +120,13 @@ SEXP proj_c_context_clone(SEXP context_xptr) {
 }
 
 SEXP proj_c_context_is_network_enabled(SEXP context_xptr) {
-  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
   int value = proj_context_is_network_enabled(context);
   return Rf_ScalarLogical(value);
 }
 
 SEXP proj_c_context_get_url_endpoint(SEXP context_xptr) {
-  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
   const char* value = proj_context_get_url_endpoint(context);
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
   SET_STRING_ELT(out, 0, Rf_mkCharCE(value, CE_UTF8));
@@ -135,7 +135,7 @@ SEXP proj_c_context_get_url_endpoint(SEXP context_xptr) {
 }
 
 SEXP proj_c_context_get_user_writable_directory(SEXP context_xptr) {
-  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
   const char* value = proj_context_get_user_writable_directory(context, 0);
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
   SET_STRING_ELT(out, 0, Rf_mkCharCE(value, CE_UTF8));
@@ -144,13 +144,13 @@ SEXP proj_c_context_get_user_writable_directory(SEXP context_xptr) {
 }
 
 SEXP proj_c_context_get_use_proj4_init_rules(SEXP context_xptr) {
-  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
   int value = proj_context_get_use_proj4_init_rules(context, 0);
   return Rf_ScalarLogical(value);
 }
 
 SEXP proj_c_context_get_database_path(SEXP context_xptr) {
-  PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
+  PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
   const char* value = proj_context_get_database_path(context);
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
   SET_STRING_ELT(out, 0, Rf_mkCharCE(value, CE_UTF8));

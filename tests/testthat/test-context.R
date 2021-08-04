@@ -5,6 +5,14 @@ test_that("proj_context() works", {
   expect_output(print(proj_context()), "proj_context")
 })
 
+test_that("with_proj_context() works", {
+  current_net <- proj_context_is_network_enabled()
+  with_proj_context(proj_context_create(network_enabled = !current_net), {
+    expect_identical(proj_context_is_network_enabled(), !current_net)
+  })
+  expect_identical(proj_context_is_network_enabled(), current_net)
+})
+
 test_that("proj_context_clone() works", {
   expect_s3_class(proj_context_clone(), "rlibproj_context")
 })
