@@ -12,6 +12,7 @@
 #'   understands.
 #' @param source_crs,target_crs Source and/or target CRS definitions,
 #'   coerced using [as_proj()].
+#' @param pj A PROJ object or definition coerced using [as_proj()].
 #' @param wkt A well-known text definition of the PROJ object.
 #' @param options Options for instantiating the object by name
 #' @param searched_name A name query
@@ -89,6 +90,35 @@ proj_guess_wkt_dialect <- function(wkt, ctx = proj_context()) {
 
 }
 
+#' @rdname proj_create
+#' @export
+proj_get_source_crs <- function(pj) {
+
+}
+
+#' @rdname proj_create
+#' @export
+proj_get_target_crs <- function(pj) {
+
+}
+
+#' @rdname proj_create
+#' @export
+proj_identify <- function(pj, auth_name, options = NULL, ctx = proj_context()) {
+
+}
+
+#' @rdname proj_create
+#' @export
+proj_get_non_deprecated <- function(pj, ctx = proj_context()) {
+
+}
+
+#' @rdname proj_create
+#' @export
+proj_normalize_for_visualization <- function(pj, ctx = proj_context()) {
+
+}
 
 #' @rdname proj_create
 #' @export
@@ -169,7 +199,16 @@ proj_get_scope <- function(obj) {
 #' @rdname proj_info
 #' @export
 proj_get_area_of_use <- function(obj) {
-
+  raw <- .Call(proj_c_get_area_of_use, as_proj(obj))
+  new_data_frame(
+    list(
+      name = raw[[2]],
+      area = wk::rct(
+        raw[[1]][1], raw[[1]][2], raw[[1]][3], raw[[1]][4],
+        crs = "OGC:CRS84"
+      )
+    )
+  )
 }
 
 #' @rdname proj_info
@@ -189,36 +228,6 @@ proj_as_proj_string <- function(obj, proj_string_type = NULL, options = NULL,
 #' @rdname proj_info
 #' @export
 proj_as_projjson <- function(obj, options = NULL, ctx = proj_context()) {
-
-}
-
-#' @rdname proj_info
-#' @export
-proj_get_source_crs <- function(obj) {
-
-}
-
-#' @rdname proj_info
-#' @export
-proj_get_target_crs <- function(obj) {
-
-}
-
-#' @rdname proj_info
-#' @export
-proj_identify <- function(obj, auth_name, options = NULL, ctx = proj_context()) {
-
-}
-
-#' @rdname proj_info
-#' @export
-proj_get_non_deprecated <- function(obj, ctx = proj_context()) {
-
-}
-
-#' @rdname proj_info
-#' @export
-proj_normalize_for_visualization <- function(obj, ctx = proj_context()) {
 
 }
 

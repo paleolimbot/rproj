@@ -50,6 +50,14 @@ test_that("proj_is_deprecated() works", {
   expect_false(proj_is_deprecated("+proj=noop"))
 })
 
+test_that("proj_get_area_of_use() works", {
+  aou <- proj_get_area_of_use("EPSG:4326")
+  expect_true(!is.na(aou$name))
+  expect_identical(aou$area, wk::rct(-180, -90, 180, 90, crs = "OGC:CRS84"))
+
+  expect_error(proj_get_area_of_use("+proj=noop"))
+})
+
 test_that("print and format methods work", {
   expect_match(format(proj_create("+proj=noop")), "<proj")
   p <- proj_create("+proj=noop")

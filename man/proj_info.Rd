@@ -12,11 +12,6 @@
 \alias{proj_as_wkt}
 \alias{proj_as_proj_string}
 \alias{proj_as_projjson}
-\alias{proj_get_source_crs}
-\alias{proj_get_target_crs}
-\alias{proj_identify}
-\alias{proj_get_non_deprecated}
-\alias{proj_normalize_for_visualization}
 \title{PROJ object information}
 \usage{
 proj_info(obj)
@@ -45,16 +40,6 @@ proj_as_proj_string(
 )
 
 proj_as_projjson(obj, options = NULL, ctx = proj_context())
-
-proj_get_source_crs(obj)
-
-proj_get_target_crs(obj)
-
-proj_identify(obj, auth_name, options = NULL, ctx = proj_context())
-
-proj_get_non_deprecated(obj, ctx = proj_context())
-
-proj_normalize_for_visualization(obj, ctx = proj_context())
 }
 \arguments{
 \item{obj}{A \link[=proj_create]{PROJ object}}
@@ -75,8 +60,6 @@ proj_normalize_for_visualization(obj, ctx = proj_context())
 \item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
 
 \item{proj_string_type}{One of "proj_4" or "proj_5"}
-
-\item{auth_name}{An authority name (e.g., "EPSG" or "OGC")}
 }
 \description{
 PROJ object information

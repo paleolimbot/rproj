@@ -22,6 +22,7 @@ extern SEXP proj_c_is_deprecated(SEXP pj_xptr);
 extern SEXP proj_c_is_crs(SEXP pj_xptr);
 extern SEXP proj_c_get_remarks(SEXP pj_xptr);
 extern SEXP proj_c_get_scope(SEXP pj_xptr);
+extern SEXP proj_c_get_area_of_use(SEXP pj_xptr);
 extern SEXP proj_c_xptr_addr(SEXP xptr);
 static const R_CallMethodDef CallEntries[] = {
     {"proj_c_pj_default_ctx", (DL_FUNC) &proj_c_pj_default_ctx, 0},
@@ -42,6 +43,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_is_crs", (DL_FUNC) &proj_c_is_crs, 1},
   {"proj_c_get_remarks", (DL_FUNC) &proj_c_get_remarks, 1},
   {"proj_c_get_scope", (DL_FUNC) &proj_c_get_scope, 1},
+  {"proj_c_get_area_of_use", (DL_FUNC) &proj_c_get_area_of_use, 1},
   {"proj_c_xptr_addr", (DL_FUNC) &proj_c_xptr_addr, 1},
   {NULL, NULL, 0}
 };

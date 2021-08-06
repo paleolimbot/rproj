@@ -9,7 +9,7 @@
 
 PJ_CONTEXT* rlibproj_ctx_from_pj_xptr(SEXP pj_xptr) {
   SEXP ctx_xptr = R_ExternalPtrTag(pj_xptr);
-  return rlibproj_ctx_from_xptr(ctx_xptr);
+  return (PJ_CONTEXT*) R_ExternalPtrAddr(ctx_xptr);
 }
 
 PJ* rlibproj_pj_from_xptr(SEXP pj_xptr) {
@@ -186,5 +186,38 @@ SEXP proj_c_get_scope(SEXP pj_xptr) {
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
   SET_STRING_ELT(out, 0, Rf_mkCharCE(scope, CE_UTF8));
   UNPROTECT(1);
+  return out;
+}
+
+SEXP proj_c_get_area_of_use(SEXP pj_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_pj_xptr(pj_xptr);
+
+  SEXP area_sexp = PROTECT(Rf_allocVector(REALSXP, 4));
+  double* area = REAL(area_sexp);
+  SEXP name_sexp = PROTECT(Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(name_sexp, 0, NA_STRING);
+
+  const char* name_ptr = NULL;
+
+  int code = proj_get_area_of_use(
+    ctx,
+    pj,
+    area + 0, area + 1, area + 2, area + 3,
+    &name_ptr
+  );
+
+  if (code != 1) {
+    rlibproj_pj_stop_for_error(pj_xptr);
+  }
+
+  if (name_ptr != NULL) {
+    SET_STRING_ELT(name_sexp, 0, Rf_mkCharCE(name_ptr, CE_UTF8));
+  }
+
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, 2));
+  SET_VECTOR_ELT(out, 0, area_sexp);
+  SET_VECTOR_ELT(out, 1, name_sexp);
+  UNPROTECT(3);
   return out;
 }

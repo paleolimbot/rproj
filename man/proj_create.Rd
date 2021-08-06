@@ -6,6 +6,11 @@
 \alias{proj_create_from_wkt}
 \alias{proj_create_from_name}
 \alias{proj_guess_wkt_dialect}
+\alias{proj_get_source_crs}
+\alias{proj_get_target_crs}
+\alias{proj_identify}
+\alias{proj_get_non_deprecated}
+\alias{proj_normalize_for_visualization}
 \alias{as_proj}
 \alias{as_proj.rlibproj_proj}
 \alias{as_proj.character}
@@ -36,6 +41,16 @@ proj_create_from_name(
 )
 
 proj_guess_wkt_dialect(wkt, ctx = proj_context())
+
+proj_get_source_crs(pj)
+
+proj_get_target_crs(pj)
+
+proj_identify(pj, auth_name, options = NULL, ctx = proj_context())
+
+proj_get_non_deprecated(pj, ctx = proj_context())
+
+proj_normalize_for_visualization(pj, ctx = proj_context())
 
 as_proj(x, ..., ctx = proj_context())
 
@@ -74,6 +89,8 @@ values of "crs" and "ellipsoid" are probably the most useful.}
 \item{limit_result_count}{A limit on the number of matches}
 
 \item{options}{Options for instantiating the object by name}
+
+\item{pj}{A PROJ object or definition coerced using \code{\link[=as_proj]{as_proj()}}.}
 
 \item{x}{An object to convert to a PROJ pointer}
 
