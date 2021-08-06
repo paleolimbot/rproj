@@ -97,7 +97,7 @@ proj_get_type <- function(obj) {
 #' @rdname proj_info
 #' @export
 proj_is_deprecated <- function(obj) {
-
+  .Call(proj_c_is_deprecated, as_proj(obj))
 }
 
 #' @rdname proj_info
@@ -109,19 +109,19 @@ proj_is_equivalent_to <- function(obj, other, criterion) {
 #' @rdname proj_info
 #' @export
 proj_is_crs <- function(obj) {
-
+  .Call(proj_c_is_crs, as_proj(obj))
 }
 
 #' @rdname proj_info
 #' @export
 proj_get_remarks <- function(obj) {
-
+  .Call(proj_c_get_remarks, as_proj(obj))
 }
 
 #' @rdname proj_info
 #' @export
 proj_get_scope <- function(obj) {
-
+  .Call(proj_c_get_scope, as_proj(obj))
 }
 
 #' @rdname proj_info

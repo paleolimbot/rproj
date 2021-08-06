@@ -17,6 +17,10 @@ extern SEXP proj_c_version_build();
 extern SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp);
 extern SEXP proj_c_proj_info(SEXP pj_xptr);
 extern SEXP proj_c_get_type(SEXP pj_xptr);
+extern SEXP proj_c_is_deprecated(SEXP pj_xptr);
+extern SEXP proj_c_is_crs(SEXP pj_xptr);
+extern SEXP proj_c_get_remarks(SEXP pj_xptr);
+extern SEXP proj_c_get_scope(SEXP pj_xptr);
 extern SEXP proj_c_xptr_addr(SEXP xptr);
 static const R_CallMethodDef CallEntries[] = {
     {"proj_c_pj_default_ctx", (DL_FUNC) &proj_c_pj_default_ctx, 0},
@@ -32,6 +36,10 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_create", (DL_FUNC) &proj_c_create, 2},
   {"proj_c_proj_info", (DL_FUNC) &proj_c_proj_info, 1},
   {"proj_c_get_type", (DL_FUNC) &proj_c_get_type, 1},
+  {"proj_c_is_deprecated", (DL_FUNC) &proj_c_is_deprecated, 1},
+  {"proj_c_is_crs", (DL_FUNC) &proj_c_is_crs, 1},
+  {"proj_c_get_remarks", (DL_FUNC) &proj_c_get_remarks, 1},
+  {"proj_c_get_scope", (DL_FUNC) &proj_c_get_scope, 1},
   {"proj_c_xptr_addr", (DL_FUNC) &proj_c_xptr_addr, 1},
   {NULL, NULL, 0}
 };

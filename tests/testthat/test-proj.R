@@ -14,6 +14,23 @@ test_that("proj_get_name() works", {
   expect_identical(proj_get_type("EPSG:4326"), "GEOGRAPHIC_2D_CRS")
 })
 
+test_that("proj_get_remarks() works", {
+  expect_identical(proj_get_remarks("EPSG:4326"), "")
+})
+
+test_that("proj_get_scope() works", {
+  expect_true(proj_get_scope("EPSG:4326") != "")
+})
+
+test_that("proj_is_crs() works", {
+  expect_true(proj_is_crs("EPSG:4326"))
+  expect_false(proj_is_crs("+proj=noop"))
+})
+
+test_that("proj_is_deprecated() works", {
+  expect_false(proj_is_deprecated("+proj=noop"))
+})
+
 test_that("print and format methods work", {
   expect_match(format(proj_create("+proj=noop")), "<proj")
   p <- proj_create("+proj=noop")

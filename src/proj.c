@@ -6,6 +6,11 @@
 #include "context.h"
 
 
+PJ_CONTEXT* rlibproj_ctx_from_pj_xptr(SEXP pj_xptr) {
+  SEXP ctx_xptr = R_ExternalPtrTag(pj_xptr);
+  return rlibproj_ctx_from_xptr(ctx_xptr);
+}
+
 PJ* rlibproj_pj_from_xptr(SEXP pj_xptr) {
   if (TYPEOF(pj_xptr) != EXTPTRSXP) {
     Rf_error("`obj` must be an external pointer");
@@ -20,7 +25,29 @@ PJ* rlibproj_pj_from_xptr(SEXP pj_xptr) {
     Rf_error("`obj` is external pointer to NULL");
   }
 
+  // reset the error
+  proj_errno_reset(pj);
   return pj;
+}
+
+void rlibproj_pj_stop_for_error(SEXP pj_xptr) {
+  // don't reset the errors here!
+  PJ* pj = (PJ*) R_ExternalPtrAddr(pj_xptr);
+  SEXP ctx_xptr = R_ExternalPtrTag(pj_xptr);
+  PJ_CONTEXT* ctx = (PJ_CONTEXT*) R_ExternalPtrAddr(ctx_xptr);
+
+  int errno = proj_errno(pj);
+  const char* errstring = proj_context_errno_string(ctx, errno);
+  const char* log_errstring = rlibproj_logger_error(ctx_xptr);
+  if (log_errstring == NULL && errstring == NULL) {
+    Rf_error("Unknown error");
+  } else if (log_errstring == NULL) {
+    Rf_error(errstring);
+  } else if (errstring == NULL) {
+    Rf_error(log_errstring);
+  } else {
+    Rf_error("%s\n%s", errstring, log_errstring);
+  }
 }
 
 
@@ -79,4 +106,40 @@ SEXP proj_c_proj_info(SEXP pj_xptr) {
 SEXP proj_c_get_type(SEXP pj_xptr) {
   PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
   return Rf_ScalarInteger(proj_get_type(pj));
+}
+
+SEXP proj_c_is_deprecated(SEXP pj_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  return Rf_ScalarLogical(proj_is_deprecated(pj));
+}
+
+SEXP proj_c_is_crs(SEXP pj_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  return Rf_ScalarLogical(proj_is_crs(pj));
+}
+
+SEXP proj_c_get_remarks(SEXP pj_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  const char* remarks = proj_get_remarks(pj);
+  if (remarks == NULL) {
+    rlibproj_pj_stop_for_error(pj_xptr);
+  }
+
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(out, 0, Rf_mkCharCE(remarks, CE_UTF8));
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP proj_c_get_scope(SEXP pj_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  const char* scope = proj_get_scope(pj);
+  if (scope == NULL) {
+    rlibproj_pj_stop_for_error(pj_xptr);
+  }
+
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(out, 0, Rf_mkCharCE(scope, CE_UTF8));
+  UNPROTECT(1);
+  return out;
 }
