@@ -4,6 +4,8 @@
 #' @inheritParams proj_context
 #' @inheritParams crs2crs::crs_engine_null
 #' @inheritParams crs2crs::crs_proj_definition
+#' @param allow_ballpark Use `FALSE` to omit ballpark transformations
+#' @param accuracy The minimum desired accuracy for the transformation
 #' @param bbox The bounding box to use when searching for appropriate
 #'   transformations.
 #' @param spatial_test Use "none" to skip using extents when selecting
@@ -28,18 +30,28 @@ crs_engine_proj_pipeline.rlibrpoj_crs2crs_engine <- function(engine, handleable,
                                                              auth_name = NA_character_,
                                                              allow_ballpark = NA,
                                                              ...) {
+  options <- character()
+  if (!identical(auth_name, NA_character_)) {
+    options <- c(options, paste0("AUTHORITY=", auth_name))
+  }
+
+  if (identical(allow_ballpark, TRUE)) {
+    options <- c(options, "ALLOW_BALLPARK=yes")
+  } else if (identical(allow_ballpark, FALSE)) {
+    options <- c(options, "ALLOW_BALLPARK=no")
+  }
+
+  if (!identical(accuracy, NA_real_)) {
+    options <- c(options, paste0("ACCURACY=", assert_dbl1(accuracy)))
+  }
+
   crs_from <- crs_sanitize_proj_crs(crs_from)
   crs_to <- crs_sanitize_proj_crs(crs_to)
   if (!identical(engine$spatial_test, "intersects")) {
     bbox <- NULL
   }
 
-  proj_create_crs_to_crs(
-    crs_from, crs_to,
-    area = bbox,
-    auth_name = auth_name,
-    allow_ballpark = allow_ballpark
-  )
+  proj_create_crs_to_crs(crs_from, crs_to, options = options)
 }
 
 #' @rdname crs_engine_rlibproj

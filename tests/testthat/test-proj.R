@@ -13,14 +13,45 @@ test_that("proj_create_crs_to_crs() works", {
   expect_match(proj_info(noop)$definition, "noop")
 
   # check with options
-  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", auth_name = "EPSG")
+  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", options="AUTHORITY=EPSG")
   expect_match(proj_info(noop)$definition, "noop")
-  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", allow_ballpark = TRUE)
-  expect_match(proj_info(noop)$definition, "noop")
-  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", allow_ballpark = FALSE)
-  expect_match(proj_info(noop)$definition, "noop")
-  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", accuracy = 1)
-  expect_match(proj_info(noop)$definition, "noop")
+})
+
+test_that("proj_create_from_wkt() works", {
+  wkt_good <- paste0(
+    "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563],",
+    "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],",
+    "UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Longitude\",EAST],",
+    "AXIS[\"Latitude\",NORTH]]"
+  )
+
+  pj <- expect_silent(proj_create_from_wkt(wkt_good))
+  expect_s3_class(pj, "rlibproj_proj")
+  expect_error(proj_create_from_wkt("invalid"), "reported error")
+
+  # from https://github.com/OSGeo/PROJ/blob/master/test/unit/test_c_api.cpp#L316
+  wkt_warn <- paste0(
+    "PROJCS[\"test\",\n",
+    "  GEOGCS[\"WGS 84\",\n",
+    "    DATUM[\"WGS_1984\",\n",
+    "        SPHEROID[\"WGS 84\",6378137,298.257223563]],\n",
+    "    PRIMEM[\"Greenwich\",0],\n",
+    "    UNIT[\"degree\",0.0174532925199433]],\n",
+    "  PROJECTION[\"Transverse_Mercator\"],\n",
+    "  PARAMETER[\"latitude_of_origin\",31],\n",
+    "  UNIT[\"metre\",1]]"
+  )
+
+  expect_warning(
+    expect_s3_class(proj_create_from_wkt(wkt_warn), "rlibproj_proj"),
+    "reported warning"
+  )
+
+  # bad options
+  expect_error(
+    .Call(proj_c_create_from_wkt, proj_context(), "invalid", "NOT_AN_OPTION=NOPE"),
+    "Unknown option"
+  )
 })
 
 test_that("proj_info() works", {

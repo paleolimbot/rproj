@@ -4,7 +4,6 @@
 \alias{proj_create}
 \alias{proj_create_crs_to_crs}
 \alias{proj_create_from_wkt}
-\alias{proj_create_from_name}
 \alias{proj_guess_wkt_dialect}
 \alias{proj_get_source_crs}
 \alias{proj_get_target_crs}
@@ -22,23 +21,11 @@ proj_create_crs_to_crs(
   source_crs,
   target_crs,
   area = NULL,
-  auth_name = NA_character_,
-  allow_ballpark = NA,
-  accuracy = NA_real_,
+  options = character(),
   ctx = proj_context()
 )
 
-proj_create_from_wkt(wkt, ctx = proj_context())
-
-proj_create_from_name(
-  searched_name,
-  auth_name,
-  types,
-  approximate_match,
-  limit_result_count,
-  options = NULL,
-  ctx = proj_context()
-)
+proj_create_from_wkt(wkt, options = character(), ctx = proj_context())
 
 proj_guess_wkt_dialect(wkt, ctx = proj_context())
 
@@ -71,26 +58,13 @@ coerced using \code{\link[=as_proj]{as_proj()}}.}
 \item{area}{A \link[=as_proj_area]{PROJ area} to use when selecting the
 best available transformation.}
 
-\item{auth_name}{An authority name (e.g., "EPSG" or "OGC")}
-
-\item{allow_ballpark}{Use \code{FALSE} to omit ballpark transformations}
-
-\item{accuracy}{The minimum desired accuracy for the transformation}
+\item{options}{Options for instantiating the object by name}
 
 \item{wkt}{A well-known text definition of the PROJ object.}
 
-\item{searched_name}{A name query}
-
-\item{types}{The types of objects that should be queried. Type
-values of "crs" and "ellipsoid" are probably the most useful.}
-
-\item{approximate_match}{Use \code{TRUE} for near matches}
-
-\item{limit_result_count}{A limit on the number of matches}
-
-\item{options}{Options for instantiating the object by name}
-
 \item{pj}{A PROJ object or definition coerced using \code{\link[=as_proj]{as_proj()}}.}
+
+\item{auth_name}{An authority name (e.g., "EPSG" or "OGC")}
 
 \item{x}{An object to convert to a PROJ pointer}
 

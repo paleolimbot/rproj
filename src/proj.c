@@ -83,16 +83,11 @@ SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr,
   PJ* target_crs = rlibproj_pj_from_xptr(target_crs_xptr);
 
   // options is a NULL-terminated char[]
-  const char** options;
-  if (options_sexp == R_NilValue) {
-    options = NULL;
-  } else {
-    options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
-    for (int i = 0; i < Rf_length(options_sexp); i++) {
-      options[i] = Rf_translateCharUTF8(STRING_ELT(options_sexp, i));
-    }
-    options[Rf_length(options_sexp)] = NULL;
+  const char** options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
+  for (int i = 0; i < Rf_length(options_sexp); i++) {
+    options[i] = Rf_translateCharUTF8(STRING_ELT(options_sexp, i));
   }
+  options[Rf_length(options_sexp)] = NULL;
 
   // nothing in here should longjmp (before we can free options)
   PJ* obj;
@@ -117,6 +112,70 @@ SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr,
   Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
   UNPROTECT(1);
   return pj_xptr;
+}
+
+SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp) {
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  const char* wkt = Rf_translateCharUTF8(STRING_ELT(wkt_sexp, 0));
+
+  // options is a NULL-terminated char[]
+  const char** options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
+  for (int i = 0; i < Rf_length(options_sexp); i++) {
+    options[i] = Rf_translateCharUTF8(STRING_ELT(options_sexp, i));
+  }
+  options[Rf_length(options_sexp)] = NULL;
+
+  PROJ_STRING_LIST warnings = NULL;
+  PROJ_STRING_LIST grammar_errors = NULL;
+
+  PJ* obj = proj_create_from_wkt(ctx, wkt, options, &warnings, &grammar_errors);
+
+  free(options);
+
+  // because we report grammar errors, some failed constructions are ok
+  // technically these allocs could longjmp and leak warnings/grammar_errors
+  // but the allocs are small and this is unlikely
+  SEXP pj_xptr;
+  if ((obj == NULL) && ((warnings != NULL) || (grammar_errors != NULL))) {
+    pj_xptr = PROTECT(Rf_allocVector(VECSXP, 0));
+  } else if (obj != NULL) {
+    // wrap the PJ* pointer first so it will be destroyed if any of the below fails
+    pj_xptr = PROTECT(R_MakeExternalPtr(obj, ctx_xptr, R_NilValue));
+    R_RegisterCFinalizer(pj_xptr, &proj_xptr_destroy);
+    Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  } else {
+    // it's worth stopping here because the logger probably picked up an error
+    // (e.g., bad options)
+    if (warnings != NULL) proj_string_list_destroy(warnings);
+    if (grammar_errors != NULL) proj_string_list_destroy(grammar_errors);
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  int n_warnings = 0;
+  while (warnings && warnings[n_warnings]) n_warnings++;
+  int n_grammar_errors = 0;
+  while (grammar_errors && grammar_errors[n_grammar_errors]) n_grammar_errors++;
+
+  SEXP warnings_sexp = PROTECT(Rf_allocVector(STRSXP, n_warnings));
+  for (int i = 0; i < n_warnings; i++) {
+    SET_STRING_ELT(warnings_sexp, i, Rf_mkCharCE(warnings[i], CE_UTF8));
+  }
+
+  SEXP grammar_errors_sexp = PROTECT(Rf_allocVector(STRSXP, n_grammar_errors));
+  for (int i = 0; i < n_grammar_errors; i++) {
+    SET_STRING_ELT(grammar_errors_sexp, i, Rf_mkCharCE(grammar_errors[i], CE_UTF8));
+  }
+
+  if (warnings != NULL) proj_string_list_destroy(warnings);
+  if (grammar_errors != NULL) proj_string_list_destroy(grammar_errors);
+
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, 3));
+  SET_VECTOR_ELT(out, 0, pj_xptr);
+  SET_VECTOR_ELT(out, 1, warnings_sexp);
+  SET_VECTOR_ELT(out, 2, grammar_errors_sexp);
+
+  UNPROTECT(4);
+  return out;
 }
 
 SEXP proj_c_proj_info(SEXP pj_xptr) {

@@ -15,16 +15,9 @@
 #' @param pj A PROJ object or definition coerced using [as_proj()].
 #' @param wkt A well-known text definition of the PROJ object.
 #' @param options Options for instantiating the object by name
-#' @param searched_name A name query
-#' @param approximate_match Use `TRUE` for near matches
-#' @param limit_result_count A limit on the number of matches
-#' @param types The types of objects that should be queried. Type
-#'   values of "crs" and "ellipsoid" are probably the most useful.
 #' @param auth_name An authority name (e.g., "EPSG" or "OGC")
 #' @param area A [PROJ area][as_proj_area] to use when selecting the
 #'   best available transformation.
-#' @param allow_ballpark Use `FALSE` to omit ballpark transformations
-#' @param accuracy The minimum desired accuracy for the transformation
 #' @param x An object to convert to a PROJ pointer
 #' @param ... Passed to S3 methods
 #' @inheritParams proj_context
@@ -37,28 +30,12 @@ proj_create <- function(definition, ctx = proj_context()) {
 #' @rdname proj_create
 #' @export
 proj_create_crs_to_crs <- function(source_crs, target_crs, area = NULL,
-                                   auth_name = NA_character_,
-                                   allow_ballpark = NA,
-                                   accuracy = NA_real_,
-                                   ctx = proj_context()) {
+                                   options = character(), ctx = proj_context()) {
   if (!is.null(area)) {
     area <- as_proj_area(area)
   }
 
-  options <- character()
-  if (!identical(auth_name, NA_character_)) {
-    options <- c(options, paste0("AUTHORITY=", auth_name))
-  }
-
-  if (identical(allow_ballpark, TRUE)) {
-    options <- c(options, "ALLOW_BALLPARK=yes")
-  } else if (identical(allow_ballpark, FALSE)) {
-    options <- c(options, "ALLOW_BALLPARK=no")
-  }
-
-  if (!identical(accuracy, NA_real_)) {
-    options <- c(options, paste0("ACCURACY=", assert_dbl1(accuracy)))
-  }
+  options <- as.character(options[!is.na(options)])
 
   .Call(
     proj_c_create_crs_to_crs,
@@ -72,16 +49,32 @@ proj_create_crs_to_crs <- function(source_crs, target_crs, area = NULL,
 
 #' @rdname proj_create
 #' @export
-proj_create_from_wkt <- function(wkt, ctx = proj_context()) {
+proj_create_from_wkt <- function(wkt, options = character(), ctx = proj_context()) {
+  options <- as.character(options[!is.na(options)])
+  raw <- .Call(proj_c_create_from_wkt, ctx, assert_chr1(wkt, "wkt"), options)
 
-}
+  # a few options depending on whether or not there were any warnings, errors
+  # or whether or not a PJ* was constructed
+  all_error_text <- NULL
+  if (length(raw[[2]]) > 0) {
+    warnings <- paste0("- ", raw[[2]], collapse = "\n")
+    warning_txt <- paste0("WKT parser reported warning(s):\n", warnings)
+    all_error_text <- warning_txt
+  }
 
-#' @rdname proj_create
-#' @export
-proj_create_from_name <- function(searched_name, auth_name, types, approximate_match,
-                                  limit_result_count, options = NULL,
-                                  ctx = proj_context()) {
+  if (length(raw[[3]]) > 0) {
+    errors <- paste0("- ", raw[[3]], collapse = "\n")
+    error_txt <- paste0("WKT parser reported error(s):\n", errors)
+    all_error_text <- c(all_error_text, error_txt)
+  }
 
+  if (!is.null(all_error_text) && inherits(raw[[1]], "rlibproj_proj")) {
+    warning(paste0(all_error_text, collapse = "\n"), call. = FALSE)
+  } else if (!is.null(all_error_text)) {
+    stop(paste0(all_error_text, collapse = "\n"), call. = FALSE)
+  }
+
+  raw[[1]]
 }
 
 #' @rdname proj_create
