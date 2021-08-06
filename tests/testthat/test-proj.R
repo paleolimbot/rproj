@@ -4,6 +4,25 @@ test_that("proj_create() works", {
   expect_error(proj_create("+proj=not_a_proj"), "Unknown projection")
 })
 
+test_that("proj_create_crs_to_crs() works", {
+  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84")
+  expect_match(proj_info(noop)$definition, "noop")
+
+  # check with area
+  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", area = wk::xy(0, 0))
+  expect_match(proj_info(noop)$definition, "noop")
+
+  # check with options
+  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", auth_name = "EPSG")
+  expect_match(proj_info(noop)$definition, "noop")
+  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", allow_ballpark = TRUE)
+  expect_match(proj_info(noop)$definition, "noop")
+  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", allow_ballpark = FALSE)
+  expect_match(proj_info(noop)$definition, "noop")
+  noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84", accuracy = 1)
+  expect_match(proj_info(noop)$definition, "noop")
+})
+
 test_that("proj_info() works", {
   expect_identical(proj_info("+proj=noop")$id, "noop")
   expect_identical(proj_info("EPSG:4326")$id, NA_character_)

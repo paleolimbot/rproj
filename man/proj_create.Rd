@@ -2,6 +2,7 @@
 % Please edit documentation in R/proj.R
 \name{proj_create}
 \alias{proj_create}
+\alias{proj_create_crs_to_crs}
 \alias{proj_create_from_wkt}
 \alias{proj_create_from_name}
 \alias{proj_guess_wkt_dialect}
@@ -11,6 +12,16 @@
 \title{Create PROJ objects}
 \usage{
 proj_create(definition, ctx = proj_context())
+
+proj_create_crs_to_crs(
+  source_crs,
+  target_crs,
+  area = NULL,
+  auth_name = NA_character_,
+  allow_ballpark = NA,
+  accuracy = NA_real_,
+  ctx = proj_context()
+)
 
 proj_create_from_wkt(wkt, ctx = proj_context())
 
@@ -39,11 +50,21 @@ understands.}
 
 \item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
 
+\item{source_crs, target_crs}{Source and/or target CRS definitions,
+coerced using \code{\link[=as_proj]{as_proj()}}.}
+
+\item{area}{A \link[=as_proj_area]{PROJ area} to use when selecting the
+best available transformation.}
+
+\item{auth_name}{An authority name (e.g., "EPSG" or "OGC")}
+
+\item{allow_ballpark}{Use \code{FALSE} to omit ballpark transformations}
+
+\item{accuracy}{The minimum desired accuracy for the transformation}
+
 \item{wkt}{A well-known text definition of the PROJ object.}
 
 \item{searched_name}{A name query}
-
-\item{auth_name}{An authority name (e.g., "EPSG" or "OGC")}
 
 \item{types}{The types of objects that should be queried. Type
 values of "crs" and "ellipsoid" are probably the most useful.}

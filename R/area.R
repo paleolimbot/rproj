@@ -1,10 +1,34 @@
 
-# The idea here is that the PJ_AREA can have west > east for
-# an area that wraps the back of the earth. This uses a heuristic
-# to get the narrowest possible bounding box.
+#' Summarise a geographic area
+#'
+#' The concept of an "area" in PROJ means a geographic one
+#' that can span the antimeridian. This function uses some
+#' heuristics to find the minimum longitude span of the
+#' input (provided that the longitude span is less than
+#' 180 degrees). The [wk::wk_crs()] of the input is
+#' considered and the appropriate transform to WGS84
+#' is applied.
+#'
+#' @inheritParams wk::wk_handle
+#'
+#' @return `c(west, south, east, north)` in WGS84
+#' @export
+#'
+#' @examples
+#' as_proj_area(wk::rct(-1, -1, 1, 1))
+#' as_proj_area(wk::rct(-179, 179, 1, 1))
+#'
 as_proj_area <- function(handleable) {
+  if (is.double(handleable) && (length(handleable) == 4)) {
+    return(handleable)
+  }
+
   # missing: transform to OGC:CRS84
   xy <- unclass(wk::wk_handle(handleable, wk::wk_vertex_filter(wk::xy_writer())))
+
+  if (length(xy$x) == 0) {
+    return(c(-180, -90, 180, 90))
+  }
 
   meridian_options <- seq(-180, 180, length.out = 100)
   widths <- vapply(

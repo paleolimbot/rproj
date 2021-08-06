@@ -1,5 +1,8 @@
 
 test_that("as_proj_area works", {
+  expect_identical(as_proj_area(as.numeric(1:4)), as.numeric(1:4))
+  expect_identical(as_proj_area(wk::xy()), c(-180, -90, 180, 90))
+
   expect_equal(
     as_proj_area(wk::rct(-1, -10, 2, 12)),
     c(-1, -10, 2, 12)

@@ -10,6 +10,8 @@
 #' @param definition A character vector definition. This can be
 #'   a PROJ string, WKT, Authority:Code, or any other format PROJ
 #'   understands.
+#' @param source_crs,target_crs Source and/or target CRS definitions,
+#'   coerced using [as_proj()].
 #' @param wkt A well-known text definition of the PROJ object.
 #' @param options Options for instantiating the object by name
 #' @param searched_name A name query
@@ -18,6 +20,10 @@
 #' @param types The types of objects that should be queried. Type
 #'   values of "crs" and "ellipsoid" are probably the most useful.
 #' @param auth_name An authority name (e.g., "EPSG" or "OGC")
+#' @param area A [PROJ area][as_proj_area] to use when selecting the
+#'   best available transformation.
+#' @param allow_ballpark Use `FALSE` to omit ballpark transformations
+#' @param accuracy The minimum desired accuracy for the transformation
 #' @param x An object to convert to a PROJ pointer
 #' @param ... Passed to S3 methods
 #' @inheritParams proj_context
@@ -25,6 +31,42 @@
 #' @export
 proj_create <- function(definition, ctx = proj_context()) {
   .Call(proj_c_create, ctx, assert_chr1(definition))
+}
+
+#' @rdname proj_create
+#' @export
+proj_create_crs_to_crs <- function(source_crs, target_crs, area = NULL,
+                                   auth_name = NA_character_,
+                                   allow_ballpark = NA,
+                                   accuracy = NA_real_,
+                                   ctx = proj_context()) {
+  if (!is.null(area)) {
+    area <- as_proj_area(area)
+  }
+
+  options <- character()
+  if (!identical(auth_name, NA_character_)) {
+    options <- c(options, paste0("AUTHORITY=", auth_name))
+  }
+
+  if (identical(allow_ballpark, TRUE)) {
+    options <- c(options, "ALLOW_BALLPARK=yes")
+  } else if (identical(allow_ballpark, FALSE)) {
+    options <- c(options, "ALLOW_BALLPARK=no")
+  }
+
+  if (!identical(accuracy, NA_real_)) {
+    options <- c(options, paste0("ACCURACY=", assert_dbl1(accuracy)))
+  }
+
+  .Call(
+    proj_c_create_crs_to_crs,
+    ctx,
+    as_proj(source_crs, ctx = ctx),
+    as_proj(target_crs, ctx = ctx),
+    area,
+    options
+  )
 }
 
 #' @rdname proj_create

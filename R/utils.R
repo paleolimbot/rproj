@@ -11,6 +11,14 @@ assert_chr1 <- function(x, arg_name = "x") {
   x
 }
 
+assert_dbl1 <- function(x, arg_name = "x") {
+  if (!is.numeric(x) || (length(x) != 1)) {
+    stop(sprintf("`%s` must be numeric of length 1"))
+  }
+
+  as.numeric(x)
+}
+
 new_data_frame <- function(x) {
   structure(x, row.names = c(NA, length(x[[1]])), class = "data.frame")
 }

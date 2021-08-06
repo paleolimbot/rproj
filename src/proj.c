@@ -1,6 +1,7 @@
 #define R_NO_REMAP
 #include <R.h>
 #include <Rinternals.h>
+#include <stdlib.h>
 #include "libproj.h"
 
 #include "context.h"
@@ -63,6 +64,50 @@ SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp) {
   const char* definition = Rf_translateCharUTF8(STRING_ELT(definition_sexp, 0));
 
   PJ* obj = proj_create(ctx, definition);
+  if (obj == NULL) {
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  SEXP pj_xptr = PROTECT(R_MakeExternalPtr(obj, ctx_xptr, R_NilValue));
+  R_RegisterCFinalizer(pj_xptr, &proj_xptr_destroy);
+  Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  UNPROTECT(1);
+  return pj_xptr;
+}
+
+SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr,
+                              SEXP source_crs_xptr, SEXP target_crs_xptr,
+                              SEXP area_sexp, SEXP options_sexp) {
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* source_crs = rlibproj_pj_from_xptr(source_crs_xptr);
+  PJ* target_crs = rlibproj_pj_from_xptr(target_crs_xptr);
+
+  // options is a NULL-terminated char[]
+  const char** options;
+  if (options_sexp == R_NilValue) {
+    options = NULL;
+  } else {
+    options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
+    for (int i = 0; i < Rf_length(options_sexp); i++) {
+      options[i] = Rf_translateCharUTF8(STRING_ELT(options_sexp, i));
+    }
+    options[Rf_length(options_sexp)] = NULL;
+  }
+
+  // nothing in here should longjmp (before we can free options)
+  PJ* obj;
+  if (area_sexp == R_NilValue) {
+    obj = proj_create_crs_to_crs_from_pj(ctx, source_crs, target_crs, NULL, options);
+  } else {
+    double* area = REAL(area_sexp);
+    PJ_AREA* pj_area = proj_area_create();
+    proj_area_set_bbox(pj_area, area[0], area[1], area[2], area[3]);
+    obj = proj_create_crs_to_crs_from_pj(ctx, source_crs, target_crs, pj_area, options);
+    proj_area_destroy(pj_area);
+  }
+
+  free(options);
+
   if (obj == NULL) {
     rlibproj_ctx_stop_for_error(ctx_xptr);
   }
