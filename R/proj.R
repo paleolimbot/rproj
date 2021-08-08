@@ -104,7 +104,7 @@ proj_identify <- function(pj, auth_name, options = NULL, ctx = proj_context()) {
 #' @rdname proj_create
 #' @export
 proj_get_non_deprecated <- function(pj, ctx = proj_context()) {
-
+  .Call(proj_c_get_non_deprecated, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create

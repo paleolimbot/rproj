@@ -213,6 +213,29 @@ SEXP proj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr) {
   return target_crs_xptr;
 }
 
+SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+
+  PJ_OBJ_LIST* non_dep = proj_get_non_deprecated(ctx, pj);
+  if (non_dep == NULL) {
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, proj_list_get_count(non_dep)));
+  for (int i = 0; i < proj_list_get_count(non_dep); i++) {
+    PJ* new_pj = proj_list_get(ctx, non_dep, i);
+    SEXP new_pj_xptr = PROTECT(R_MakeExternalPtr(new_pj, ctx_xptr, R_NilValue));
+    R_RegisterCFinalizer(new_pj_xptr, &proj_xptr_destroy);
+    Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+    SET_VECTOR_ELT(out, i, new_pj_xptr);
+    UNPROTECT(1);
+  }
+
+  UNPROTECT(1);
+  return out;
+}
+
 SEXP proj_c_proj_info(SEXP pj_xptr) {
   PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
   PJ_PROJ_INFO info = proj_pj_info(pj);

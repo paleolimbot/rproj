@@ -65,6 +65,12 @@ test_that("proj_get_(source|target)_crs() works", {
   expect_error(proj_get_target_crs("OGC:CRS84"), "error")
 })
 
+test_that("proj_get_non_deprecated() works", {
+  expect_identical(proj_get_non_deprecated("OGC:CRS84"), list())
+  expect_length(proj_get_non_deprecated("EPSG:4226"), 2)
+  expect_error(proj_get_non_deprecated("+proj=noop"), "error")
+})
+
 test_that("proj_info() works", {
   expect_identical(proj_info("+proj=noop")$id, "noop")
   expect_identical(proj_info("EPSG:4326")$id, NA_character_)
