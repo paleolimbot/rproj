@@ -85,14 +85,14 @@ proj_guess_wkt_dialect <- function(wkt, ctx = proj_context()) {
 
 #' @rdname proj_create
 #' @export
-proj_get_source_crs <- function(pj) {
-
+proj_get_source_crs <- function(pj, ctx = proj_context()) {
+  .Call(proj_c_get_source_crs, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create
 #' @export
-proj_get_target_crs <- function(pj) {
-
+proj_get_target_crs <- function(pj, ctx = proj_context()) {
+  .Call(proj_c_get_target_crs, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create

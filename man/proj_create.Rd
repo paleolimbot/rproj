@@ -29,9 +29,9 @@ proj_create_from_wkt(wkt, options = character(), ctx = proj_context())
 
 proj_guess_wkt_dialect(wkt, ctx = proj_context())
 
-proj_get_source_crs(pj)
+proj_get_source_crs(pj, ctx = proj_context())
 
-proj_get_target_crs(pj)
+proj_get_target_crs(pj, ctx = proj_context())
 
 proj_identify(pj, auth_name, options = NULL, ctx = proj_context())
 

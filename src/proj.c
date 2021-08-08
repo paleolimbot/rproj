@@ -178,6 +178,41 @@ SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp) {
   return out;
 }
 
+SEXP proj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+
+  PJ* source_crs = proj_get_source_crs(ctx, pj);
+  if (source_crs == NULL) {
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  // the context associated with this PJ* is that of the original
+  // (by a reading of the source code)
+  SEXP ctx_pj = R_ExternalPtrTag(pj_xptr);
+  SEXP source_crs_xptr = PROTECT(R_MakeExternalPtr(source_crs, ctx_pj, R_NilValue));
+  R_RegisterCFinalizer(source_crs_xptr, &proj_xptr_destroy);
+  Rf_setAttrib(source_crs_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  UNPROTECT(1);
+  return source_crs_xptr;
+}
+
+SEXP proj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* target_crs = proj_get_target_crs(ctx, pj);
+  if (target_crs == NULL) {
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  SEXP ctx_pj = R_ExternalPtrTag(pj_xptr);
+  SEXP target_crs_xptr = PROTECT(R_MakeExternalPtr(target_crs, ctx_pj, R_NilValue));
+  R_RegisterCFinalizer(target_crs_xptr, &proj_xptr_destroy);
+  Rf_setAttrib(target_crs_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  UNPROTECT(1);
+  return target_crs_xptr;
+}
+
 SEXP proj_c_proj_info(SEXP pj_xptr) {
   PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
   PJ_PROJ_INFO info = proj_pj_info(pj);

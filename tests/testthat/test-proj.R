@@ -54,6 +54,17 @@ test_that("proj_create_from_wkt() works", {
   )
 })
 
+test_that("proj_get_(source|target)_crs() works", {
+  pipe_good <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857")
+  info_src <- proj_info(proj_get_source_crs(pipe_good))
+  info_dst <- proj_info(proj_get_target_crs(pipe_good))
+  expect_match(info_src$description, "WGS\\s*84")
+  expect_match(info_dst$description, "Mercator")
+
+  expect_error(proj_get_source_crs("OGC:CRS84"), "error")
+  expect_error(proj_get_target_crs("OGC:CRS84"), "error")
+})
+
 test_that("proj_info() works", {
   expect_identical(proj_info("+proj=noop")$id, "noop")
   expect_identical(proj_info("EPSG:4326")$id, NA_character_)
