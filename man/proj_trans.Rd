@@ -22,3 +22,9 @@ A transformed value of \code{x}
 \description{
 Transform coordinates
 }
+\examples{
+p <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857")
+x <- proj_coord(-64, 45)
+proj_trans(x, p)
+
+}

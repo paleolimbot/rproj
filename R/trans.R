@@ -8,6 +8,11 @@
 #' @return A transformed value of `x`
 #' @export
 #'
+#' @examples
+#' p <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857")
+#' x <- proj_coord(-64, 45)
+#' proj_trans(x, p)
+#'
 proj_trans <- function(x, pj, direction = "fwd") {
   UseMethod("proj_trans")
 }
