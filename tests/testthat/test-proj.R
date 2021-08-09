@@ -176,3 +176,19 @@ test_that("print and format methods work", {
   p <- proj_create("+proj=noop")
   expect_output(expect_identical(print(p), p), "<proj")
 })
+
+test_that("list()-like interface works", {
+  p <- proj_create("EPSG:4326")
+  expect_identical(
+    proj_as_projjson_parsed(p)$id,
+    list(authority = "EPSG", code = 4326L)
+  )
+  expect_identical(
+    p$id,
+    list(authority = "EPSG", code = 4326L)
+  )
+  expect_identical(
+    p[["id"]],
+    list(authority = "EPSG", code = 4326L)
+  )
+})

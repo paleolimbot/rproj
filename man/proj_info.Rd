@@ -12,6 +12,7 @@
 \alias{proj_as_wkt}
 \alias{proj_as_proj_string}
 \alias{proj_as_projjson}
+\alias{proj_as_projjson_parsed}
 \title{PROJ object information}
 \usage{
 proj_info(pj)
@@ -40,6 +41,8 @@ proj_as_proj_string(
 )
 
 proj_as_projjson(pj, options = NULL, ctx = proj_context())
+
+proj_as_projjson_parsed(pj)
 }
 \arguments{
 \item{pj}{A PROJ object or definition coerced using \code{\link[=as_proj]{as_proj()}}.}

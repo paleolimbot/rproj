@@ -274,6 +274,15 @@ proj_as_projjson <- function(pj, options = NULL, ctx = proj_context()) {
   .Call(proj_c_as_projjson, as_proj(pj), options, ctx)
 }
 
+#' @rdname proj_info
+#' @export
+proj_as_projjson_parsed <- function(pj) {
+  jsonlite::fromJSON(
+    proj_as_projjson(pj, options = "MULTILINE=NO"),
+    simplifyVector = TRUE
+  )
+}
+
 #' @export
 format.rlibproj_proj <- function(x, ...) {
   sprintf("<proj at %s [%s]>\n", proj_xptr_addr(x), proj_get_type(x))
@@ -284,4 +293,20 @@ print.rlibproj_proj <- function(x, ...) {
   cat(sprintf("<proj at %s [%s]>\n", proj_xptr_addr(x), proj_get_type(x)))
   cat(sprintf("* Description: %s\n", proj_info(x)$description))
   invisible(x)
+}
+
+#' @export
+`[[.rlibproj_proj` <- function(x, i) {
+  proj_as_projjson_parsed(x)[[i]]
+}
+
+#' @export
+`$.rlibproj_proj` <- function(x, i) {
+  l <- proj_as_projjson_parsed(x)
+  do.call(`$`, c(list(l), i))
+}
+
+#' @export
+names.rlibproj_proj <- function(x) {
+  names(proj_as_projjson_parsed(x))
 }
