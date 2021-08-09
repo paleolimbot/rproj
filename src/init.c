@@ -20,6 +20,7 @@ extern SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_se
 extern SEXP proj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr);
 extern SEXP proj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr);
 extern SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr);
+extern SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr);
 extern SEXP proj_c_proj_info(SEXP pj_xptr);
 extern SEXP proj_c_get_type(SEXP pj_xptr);
 extern SEXP proj_c_is_deprecated(SEXP pj_xptr);
@@ -45,6 +46,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_get_source_crs", (DL_FUNC) &proj_c_get_source_crs, 2},
   {"proj_c_get_target_crs", (DL_FUNC) &proj_c_get_target_crs, 2},
   {"proj_c_get_non_deprecated", (DL_FUNC) &proj_c_get_non_deprecated, 2},
+  {"proj_c_identify", (DL_FUNC) &proj_c_identify, 3},
   {"proj_c_proj_info", (DL_FUNC) &proj_c_proj_info, 1},
   {"proj_c_get_type", (DL_FUNC) &proj_c_get_type, 1},
   {"proj_c_is_deprecated", (DL_FUNC) &proj_c_is_deprecated, 1},

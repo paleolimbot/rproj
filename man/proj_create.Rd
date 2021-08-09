@@ -33,7 +33,7 @@ proj_get_source_crs(pj, ctx = proj_context())
 
 proj_get_target_crs(pj, ctx = proj_context())
 
-proj_identify(pj, auth_name, options = NULL, ctx = proj_context())
+proj_identify(pj, auth_name = NULL, ctx = proj_context())
 
 proj_get_non_deprecated(pj, ctx = proj_context())
 

@@ -97,8 +97,29 @@ proj_get_target_crs <- function(pj, ctx = proj_context()) {
 
 #' @rdname proj_create
 #' @export
-proj_identify <- function(pj, auth_name, options = NULL, ctx = proj_context()) {
+proj_identify <- function(pj, auth_name = NULL, ctx = proj_context()) {
+  auth_name <- as.character(auth_name[!is.na(auth_name)])
 
+  if (length(auth_name) == 0) {
+    return(new_data_frame(list(pj = list(), confidence = integer())))
+  }
+
+  results <- lapply(
+    auth_name,
+    function(auth) .Call(
+      proj_c_identify,
+      as_proj(pj),
+      auth,
+      ctx
+    )
+  )
+
+  new_data_frame(
+    list(
+      pj = new_proj_list(unlist(lapply(results, "[[", 1))),
+      confidence = unlist(lapply(results, "[[", 2))
+    )
+  )
 }
 
 #' @rdname proj_create

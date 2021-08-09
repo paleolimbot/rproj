@@ -217,14 +217,15 @@ SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
   PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
 
-  PJ_OBJ_LIST* non_dep = proj_get_non_deprecated(ctx, pj);
-  if (non_dep == NULL) {
+  PJ_OBJ_LIST* pj_lst = proj_get_non_deprecated(ctx, pj);
+  if (pj_lst == NULL) {
     rlibproj_ctx_stop_for_error(ctx_xptr);
   }
 
-  SEXP out = PROTECT(Rf_allocVector(VECSXP, proj_list_get_count(non_dep)));
-  for (int i = 0; i < proj_list_get_count(non_dep); i++) {
-    PJ* new_pj = proj_list_get(ctx, non_dep, i);
+  // pj_list could leak if any of the below fails
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, proj_list_get_count(pj_lst)));
+  for (int i = 0; i < proj_list_get_count(pj_lst); i++) {
+    PJ* new_pj = proj_list_get(ctx, pj_lst, i);
     SEXP new_pj_xptr = PROTECT(R_MakeExternalPtr(new_pj, ctx_xptr, R_NilValue));
     R_RegisterCFinalizer(new_pj_xptr, &proj_xptr_destroy);
     Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
@@ -232,8 +233,47 @@ SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
     UNPROTECT(1);
   }
 
+  proj_list_destroy(pj_lst);
+
   UNPROTECT(1);
   return out;
+}
+
+SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+
+  const char* auth_name = Rf_translateCharUTF8(STRING_ELT(auth_name_sexp, 0));
+
+  int* out_confidence;
+  PJ_OBJ_LIST* pj_lst = proj_identify(ctx, pj, auth_name, NULL, &out_confidence);
+  if (pj_lst == NULL) {
+    if (out_confidence != NULL) proj_int_list_destroy(out_confidence);
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  // pj_lst and out_confidence could leak if any of these allocs fail
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, proj_list_get_count(pj_lst)));
+  SEXP conf_out = PROTECT(Rf_allocVector(INTSXP, proj_list_get_count(pj_lst)));
+  for (int i = 0; i < proj_list_get_count(pj_lst); i++) {
+    PJ* new_pj = proj_list_get(ctx, pj_lst, i);
+    SEXP new_pj_xptr = PROTECT(R_MakeExternalPtr(new_pj, ctx_xptr, R_NilValue));
+    R_RegisterCFinalizer(new_pj_xptr, &proj_xptr_destroy);
+    Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+    SET_VECTOR_ELT(out, i, new_pj_xptr);
+    SET_INTEGER_ELT(conf_out, i, out_confidence[i]);
+    UNPROTECT(1);
+  }
+
+  proj_list_destroy(pj_lst);
+  proj_int_list_destroy(out_confidence);
+
+  SEXP container = PROTECT(Rf_allocVector(VECSXP, 2));
+  SET_VECTOR_ELT(container, 0, out);
+  SET_VECTOR_ELT(container, 1, conf_out);
+
+  UNPROTECT(3);
+  return container;
 }
 
 SEXP proj_c_proj_info(SEXP pj_xptr) {

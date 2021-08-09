@@ -71,6 +71,13 @@ test_that("proj_get_non_deprecated() works", {
   expect_error(proj_get_non_deprecated("+proj=noop"), "error")
 })
 
+test_that("proj_identify() works", {
+  id <- proj_identify("OGC:CRS84", "OGC")
+  expect_equal(nrow(id), 1)
+  expect_identical(id$confidence, 100L)
+  expect_equal(nrow(proj_identify("OGC:CRS84", auth_name = character())), 0)
+})
+
 test_that("proj_info() works", {
   expect_identical(proj_info("+proj=noop")$id, "noop")
   expect_identical(proj_info("EPSG:4326")$id, NA_character_)
