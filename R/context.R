@@ -49,7 +49,7 @@ with_proj_context <- function(ctx, expr) {
 #' @export
 proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_path = NULL,
                                 network_endpoint = NULL, network_enabled = NULL,
-                                ctx = NULL) {
+                                log_level = NULL, ctx = NULL) {
   if (is.null(ctx)) {
     ctx <- .Call(proj_c_pj_default_ctx)
   }
@@ -59,7 +59,8 @@ proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_pa
     db_path = db_path,
     ca_bundle_path = ca_bundle_path,
     network_endpoint = network_endpoint,
-    network_enabled = network_enabled
+    network_enabled = network_enabled,
+    log_level = log_level
   )
 
   libproj_config <- libproj::libproj_configuration()

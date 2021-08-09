@@ -26,6 +26,7 @@ proj_context_create(
   ca_bundle_path = NULL,
   network_endpoint = NULL,
   network_enabled = NULL,
+  log_level = NULL,
   ctx = NULL
 )
 
@@ -67,6 +68,9 @@ this is set to \url{https://cdn.proj.org}.}
 
 \item{network_enabled}{Whether or not to download gridshift files on the fly.
 This defaults to \code{FALSE}.}
+
+\item{log_level}{An integer describing the log level: 0 (none), 1 (error), 2 (debug),
+3 (trace), or 4 (tell)}
 }
 \value{
 An external pointer to a PROJ context.
