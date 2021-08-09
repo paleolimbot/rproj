@@ -27,3 +27,22 @@ proj_comp_name <- function(x) {
 proj_comp_code <- function(x) {
   proj_enum_code(x, proj_comp_name_)
 }
+
+proj_wkt_type_ <- function(x) .Call(proj_c_wkt_type, as.integer(x))
+proj_wkt_type_name <- function(x) {
+  proj_enum_name(x, proj_wkt_type_)
+}
+
+proj_wkt_type_code <- function(x) {
+  proj_enum_code(x, proj_wkt_type_)
+}
+
+proj_proj_string_type_ <- function(x) .Call(proj_c_proj_string_type, as.integer(x))
+proj_proj_string_type_name <- function(x) {
+  proj_enum_name(x, proj_proj_string_type_)
+}
+
+proj_proj_string_type_code <- function(x) {
+  proj_enum_code(x, proj_proj_string_type_)
+}
+

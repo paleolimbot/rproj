@@ -99,6 +99,8 @@ test_that("proj_is_equivalent_to() works", {
       "equivalent_except_axis_order_geogcrs"
     )
   )
+
+  expect_error(proj_is_equivalent_to("WGS84", "WGS84", "fish"), "Invalid value")
 })
 
 test_that("proj_identify() works", {

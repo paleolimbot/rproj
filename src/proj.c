@@ -344,7 +344,8 @@ SEXP proj_c_is_equivalent_to(SEXP pj_xptr, SEXP other_xptr,
   PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
 
   int criterion = INTEGER(criterion_sexp)[0];
-  return Rf_ScalarLogical(proj_is_equivalent_to_with_ctx(ctx, pj, other, criterion));
+  int result = proj_is_equivalent_to_with_ctx(ctx, pj, other, criterion);
+  return Rf_ScalarLogical(result);
 }
 
 SEXP proj_c_get_remarks(SEXP pj_xptr) {

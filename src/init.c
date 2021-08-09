@@ -12,7 +12,9 @@ extern SEXP proj_c_context_get_user_writable_directory(SEXP context_xptr);
 extern SEXP proj_c_context_get_use_proj4_init_rules(SEXP context_xptr);
 extern SEXP proj_c_context_get_database_path(SEXP context_xptr);
 extern SEXP proj_c_type_name(SEXP type_sexp);
-extern SEXP proj_c_comp_name(SEXP type_sexp);
+extern SEXP proj_c_comp_name(SEXP comp_sexp);
+extern SEXP proj_c_wkt_type(SEXP wkt_type_sexp);
+extern SEXP proj_c_proj_string_type(SEXP code_sexp);
 extern SEXP proj_c_init();
 extern SEXP proj_c_version_build();
 extern SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp);
@@ -42,6 +44,8 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_context_get_database_path", (DL_FUNC) &proj_c_context_get_database_path, 1},
   {"proj_c_type_name", (DL_FUNC) &proj_c_type_name, 1},
   {"proj_c_comp_name", (DL_FUNC) &proj_c_comp_name, 1},
+  {"proj_c_wkt_type", (DL_FUNC) &proj_c_wkt_type, 1},
+  {"proj_c_proj_string_type", (DL_FUNC) &proj_c_proj_string_type, 1},
   {"proj_c_init", (DL_FUNC) &proj_c_init, 0},
   {"proj_c_version_build", (DL_FUNC) &proj_c_version_build, 0},
   {"proj_c_create", (DL_FUNC) &proj_c_create, 2},

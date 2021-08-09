@@ -187,11 +187,16 @@ proj_is_equivalent_to <- function(obj, other, criterion = NULL, ctx = proj_conte
     criterion <- "strict"
   }
 
+  criterion <- proj_comp_code(assert_chr1(criterion, "criterion"))
+  if (identical(criterion, NA_integer_)) {
+    stop("Invalid value for `criterion`.", call. = FALSE)
+  }
+
   .Call(
     proj_c_is_equivalent_to,
     as_proj(obj),
     as_proj(other),
-    proj_comp_code(criterion),
+    criterion,
     ctx
   )
 }

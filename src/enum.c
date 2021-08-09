@@ -16,7 +16,7 @@ SEXP rlibproj_enum_name(SEXP type_sexp, const char* (*func)(int code)) {
 
 
 const char* rlibproj_type(int type) {
-  switch(type) {
+  switch (type) {
   case PJ_TYPE_UNKNOWN: return "UNKNOWN";
   case PJ_TYPE_ELLIPSOID: return "ELLIPSOID";
   case PJ_TYPE_PRIME_MERIDIAN: return "PRIME_MERIDIAN";
@@ -60,7 +60,7 @@ SEXP proj_c_type_name(SEXP type_sexp) {
 }
 
 const char* rlibproj_comp(int comparison_criterion) {
-  switch(comparison_criterion) {
+  switch (comparison_criterion) {
   case PJ_COMP_STRICT: return "STRICT";
   case PJ_COMP_EQUIVALENT: return "EQUIVALENT";
   case PJ_COMP_EQUIVALENT_EXCEPT_AXIS_ORDER_GEOGCRS:
@@ -69,6 +69,34 @@ const char* rlibproj_comp(int comparison_criterion) {
   }
 }
 
-SEXP proj_c_comp_name(SEXP type_sexp) {
-  return rlibproj_enum_name(type_sexp, &rlibproj_comp);
+SEXP proj_c_comp_name(SEXP comp_sexp) {
+  return rlibproj_enum_name(comp_sexp, &rlibproj_comp);
+}
+
+const char* rlibproj_wkt_type(int wkt_type) {
+  switch (wkt_type) {
+  case PJ_WKT2_2015: return "WKT2_2015";
+  case PJ_WKT2_2015_SIMPLIFIED: return "WKT2_2015_SIMPLIFIED";
+  case PJ_WKT2_2019: return "WKT2_2019";
+  case PJ_WKT2_2019_SIMPLIFIED: return "WKT2_2019_SIMPLIFIED";
+  case PJ_WKT1_GDAL: return "WKT1_GDAL";
+  case PJ_WKT1_ESRI: return "WKT1_ESRI";
+  default: return "";
+  }
+}
+
+SEXP proj_c_wkt_type(SEXP wkt_type_sexp) {
+  return rlibproj_enum_name(wkt_type_sexp, &rlibproj_wkt_type);
+}
+
+const char* rlibproj_proj_string_type(int code) {
+  switch (code) {
+  case PJ_PROJ_5: return "PROJ_5";
+  case PJ_PROJ_4: return "PROJ_4";
+  default: return "";
+  }
+}
+
+SEXP proj_c_proj_string_type(SEXP code_sexp) {
+  return rlibproj_enum_name(code_sexp, &rlibproj_proj_string_type);
 }
