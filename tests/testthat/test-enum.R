@@ -18,3 +18,8 @@ test_that("proj string type lookup works", {
   wkt_type <- proj_proj_string_type_name(0:2)
   expect_identical(proj_proj_string_type_code(wkt_type), c(0:1, NA))
 })
+
+test_that("proj string type lookup works", {
+  direction <- proj_direction_name(c(-1, 0, 1, 2))
+  expect_identical(proj_direction_code(direction), c(-1L, 0L, 1L, NA))
+})

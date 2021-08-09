@@ -1,6 +1,6 @@
 
-#ifndef CONTEXT_H_INCLUDED
-#define CONTEXT_H_INCLUDED
+#ifndef RLIBPROJ_CONTEXT_H_INCLUDED
+#define RLIBPROJ_CONTEXT_H_INCLUDED
 
 #define R_NO_REMAP
 #include <R.h>

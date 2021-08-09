@@ -5,8 +5,7 @@ proj_enum_name <- function(x, name_lookup) {
   names
 }
 
-proj_enum_code <- function(x, name_lookup) {
-  lookup <- 0:100
+proj_enum_code <- function(x, name_lookup, lookup = 0:40) {
   names(lookup) <- name_lookup(lookup)
   unname(lookup[toupper(x)])
 }
@@ -46,3 +45,11 @@ proj_proj_string_type_code <- function(x) {
   proj_enum_code(x, proj_proj_string_type_)
 }
 
+proj_direction_name_ <- function(x) .Call(proj_c_direction_name, as.integer(x))
+proj_direction_name <- function(x) {
+  proj_enum_name(x, proj_direction_name_)
+}
+
+proj_direction_code <- function(x) {
+  proj_enum_code(x, proj_direction_name_, lookup = -1:1)
+}

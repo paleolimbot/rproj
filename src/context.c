@@ -2,7 +2,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include "libproj.h"
-#include "context.h"
+#include "rlibproj-context.h"
 
 // using a custom log function to keep error text with the error
 // the logger is a list(NULL or character(1)) that can be reset

@@ -100,3 +100,16 @@ const char* rlibproj_proj_string_type(int code) {
 SEXP proj_c_proj_string_type(SEXP code_sexp) {
   return rlibproj_enum_name(code_sexp, &rlibproj_proj_string_type);
 }
+
+const char* rlibproj_direction(int code) {
+  switch (code) {
+  case PJ_FWD: return "FWD";
+  case PJ_IDENT: return "IDENT";
+  case PJ_INV: return "INV";
+  default: return "";
+  }
+}
+
+SEXP proj_c_direction_name(SEXP code_sexp) {
+  return rlibproj_enum_name(code_sexp, &rlibproj_direction);
+}

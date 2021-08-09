@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include "libproj.h"
 
-#include "context.h"
+#include "rlibproj-context.h"
+#include "rlibproj-proj.h"
 
 
 PJ_CONTEXT* rlibproj_ctx_from_pj_xptr(SEXP pj_xptr) {

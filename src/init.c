@@ -15,6 +15,7 @@ extern SEXP proj_c_type_name(SEXP type_sexp);
 extern SEXP proj_c_comp_name(SEXP comp_sexp);
 extern SEXP proj_c_wkt_type(SEXP wkt_type_sexp);
 extern SEXP proj_c_proj_string_type(SEXP code_sexp);
+extern SEXP proj_c_direction_name(SEXP code_sexp);
 extern SEXP proj_c_init();
 extern SEXP proj_c_version_build();
 extern SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp);
@@ -36,6 +37,7 @@ extern SEXP proj_c_get_area_of_use(SEXP pj_xptr);
 extern SEXP proj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx_xptr);
 extern SEXP proj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP options_sexp, SEXP ctx_xptr);
 extern SEXP proj_c_as_projjson(SEXP pj_xptr, SEXP options_sexp, SEXP ctx_xptr);
+extern SEXP proj_c_trans_matrix(SEXP pj_xptr, SEXP x_sexp, SEXP direction_sexp);
 extern SEXP proj_c_xptr_addr(SEXP xptr);
 static const R_CallMethodDef CallEntries[] = {
     {"proj_c_pj_default_ctx", (DL_FUNC) &proj_c_pj_default_ctx, 0},
@@ -49,6 +51,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_comp_name", (DL_FUNC) &proj_c_comp_name, 1},
   {"proj_c_wkt_type", (DL_FUNC) &proj_c_wkt_type, 1},
   {"proj_c_proj_string_type", (DL_FUNC) &proj_c_proj_string_type, 1},
+  {"proj_c_direction_name", (DL_FUNC) &proj_c_direction_name, 1},
   {"proj_c_init", (DL_FUNC) &proj_c_init, 0},
   {"proj_c_version_build", (DL_FUNC) &proj_c_version_build, 0},
   {"proj_c_create", (DL_FUNC) &proj_c_create, 2},
@@ -70,6 +73,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_as_wkt", (DL_FUNC) &proj_c_as_wkt, 4},
   {"proj_c_as_proj_string", (DL_FUNC) &proj_c_as_proj_string, 4},
   {"proj_c_as_projjson", (DL_FUNC) &proj_c_as_projjson, 3},
+  {"proj_c_trans_matrix", (DL_FUNC) &proj_c_trans_matrix, 3},
   {"proj_c_xptr_addr", (DL_FUNC) &proj_c_xptr_addr, 1},
   {NULL, NULL, 0}
 };
