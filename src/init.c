@@ -37,7 +37,7 @@ extern SEXP proj_c_get_area_of_use(SEXP pj_xptr);
 extern SEXP proj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx_xptr);
 extern SEXP proj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP options_sexp, SEXP ctx_xptr);
 extern SEXP proj_c_as_projjson(SEXP pj_xptr, SEXP options_sexp, SEXP ctx_xptr);
-extern SEXP proj_c_trans_matrix(SEXP pj_xptr, SEXP x_sexp, SEXP direction_sexp);
+extern SEXP proj_c_trans_matrix(SEXP pj_xptr, SEXP x_sexp, SEXP direction_sexp, SEXP verbose_sexp);
 extern SEXP proj_c_xptr_addr(SEXP xptr);
 static const R_CallMethodDef CallEntries[] = {
     {"proj_c_pj_default_ctx", (DL_FUNC) &proj_c_pj_default_ctx, 0},
@@ -73,7 +73,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_as_wkt", (DL_FUNC) &proj_c_as_wkt, 4},
   {"proj_c_as_proj_string", (DL_FUNC) &proj_c_as_proj_string, 4},
   {"proj_c_as_projjson", (DL_FUNC) &proj_c_as_projjson, 3},
-  {"proj_c_trans_matrix", (DL_FUNC) &proj_c_trans_matrix, 3},
+  {"proj_c_trans_matrix", (DL_FUNC) &proj_c_trans_matrix, 4},
   {"proj_c_xptr_addr", (DL_FUNC) &proj_c_xptr_addr, 1},
   {NULL, NULL, 0}
 };

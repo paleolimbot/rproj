@@ -4,6 +4,11 @@
 #' @param x An R object
 #' @inheritParams proj_info
 #' @param direction One of "fwd", "ident", or "inv".
+#' @param verbose Use `FALSE` to keep log output during transforms.
+#'    This is usually not what you want, since you might be transforming
+#'    millions of coordinates (which may result in millions of log
+#'    messages).
+#' @param ... Passed to S3 methods
 #'
 #' @return A transformed value of `x`
 #' @export
@@ -13,13 +18,13 @@
 #' x <- proj_coord(-64, 45)
 #' proj_trans(x, p)
 #'
-proj_trans <- function(x, pj, direction = "fwd") {
+proj_trans <- function(x, pj, direction = "fwd", verbose = FALSE, ...) {
   UseMethod("proj_trans")
 }
 
 #' @rdname proj_trans
 #' @export
-proj_trans.matrix <- function(x, pj, direction = "fwd") {
+proj_trans.matrix <- function(x, pj, direction = "fwd", verbose = FALSE, ...) {
   stopifnot(ncol(x) >= 4)
   direction <- proj_direction_code(assert_chr1(direction, "direction"))
   if (identical(direction, NA_integer_)) {
@@ -27,7 +32,7 @@ proj_trans.matrix <- function(x, pj, direction = "fwd") {
   }
 
   mode(x) <- "numeric"
-  result <- .Call(proj_c_trans_matrix, as_proj(pj), x, direction)
+  result <- .Call(proj_c_trans_matrix, as_proj(pj), x, direction, assert_lgl1(verbose))
   colnames(result) <- c("x", "y", "z", "t", "errno")
   result
 }

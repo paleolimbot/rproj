@@ -6,4 +6,20 @@ test_that("trans works for matrix", {
   xout <- proj_trans(x, p, "fwd")
   xcpy <- proj_trans(xout, p, "inv")
   expect_equal(xcpy[, 1:4, drop = FALSE], x)
+
+  # check logging with verbose output
+  expect_silent(proj_trans(proj_coord(0, 100), p))
+
+  temp <- tempfile()
+  tempf <- file(temp, open = "w")
+  sink(tempf, type = "message")
+
+  proj_trans(proj_coord(0, 100), p, verbose = TRUE)
+
+  sink(type = "message")
+  close(tempf)
+
+  expect_true(any(grepl("first error was", readLines(temp))))
+
+  unlink(temp)
 })
