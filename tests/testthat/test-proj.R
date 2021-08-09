@@ -152,6 +152,25 @@ test_that("proj_as_wkt() works", {
   expect_error(proj_as_wkt("EPSG:4326", options = "NOT_AN_OPTION"), "error")
 })
 
+test_that("proj_as_proj_string() works", {
+  expect_match(proj_as_proj_string("EPSG:4326"), "^\\+proj=longlat")
+  multiline <- proj_as_proj_string(
+    "EPSG:4326",
+    options = c("MULTILINE=YES", "MAX_LINE_LENGTH=10")
+  )
+  expect_true(grepl("\n", multiline))
+  expect_error(proj_as_proj_string("EPSG:4326", options = "NOT_AN_OPTION"), "error")
+})
+
+test_that("proj_as_projjson() works", {
+  json <- proj_as_projjson("EPSG:4326")
+  parsed <- jsonlite::fromJSON(json)
+  expect_identical(parsed$id, list(authority = "EPSG", code = 4326L))
+  oneline <- proj_as_projjson("EPSG:4326", options = "MULTILINE=NO")
+  expect_false(grepl("\n", oneline))
+  expect_error(proj_as_projjson("EPSG:4326", options = "NOT_AN_OPTION"), "error")
+})
+
 test_that("print and format methods work", {
   expect_match(format(proj_create("+proj=noop")), "<proj")
   p <- proj_create("+proj=noop")

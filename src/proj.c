@@ -429,3 +429,48 @@ SEXP proj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx
   UNPROTECT(1);
   return out;
 }
+
+SEXP proj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP options_sexp, SEXP ctx_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_pj_xptr(pj_xptr);
+  int proj_string_type = INTEGER(proj_string_type_sexp)[0];
+
+  const char** options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
+  for (int i = 0; i < Rf_length(options_sexp); i++) {
+    options[i] = Rf_translateCharUTF8(STRING_ELT(options_sexp, i));
+  }
+  options[Rf_length(options_sexp)] = NULL;
+
+  const char* value = proj_as_proj_string(ctx, pj, proj_string_type, options);
+  free(options);
+  if (value == NULL) {
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(out, 0, Rf_mkCharCE(value, CE_UTF8));
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP proj_c_as_projjson(SEXP pj_xptr,  SEXP options_sexp, SEXP ctx_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_pj_xptr(pj_xptr);
+
+  const char** options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
+  for (int i = 0; i < Rf_length(options_sexp); i++) {
+    options[i] = Rf_translateCharUTF8(STRING_ELT(options_sexp, i));
+  }
+  options[Rf_length(options_sexp)] = NULL;
+
+  const char* value = proj_as_projjson(ctx, pj, options);
+  free(options);
+  if (value == NULL) {
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(out, 0, Rf_mkCharCE(value, CE_UTF8));
+  UNPROTECT(1);
+  return out;
+}

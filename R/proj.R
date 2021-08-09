@@ -254,13 +254,24 @@ proj_as_wkt <- function(pj, wkt_type = NULL, options = character(),
 #' @export
 proj_as_proj_string <- function(pj, proj_string_type = NULL, options = NULL,
                                 ctx = proj_context()) {
+  options <- as.character(options[!is.na(options)])
+  if (is.null(proj_string_type)) {
+    proj_string_type <- "PROJ_5"
+  }
 
+  proj_string_type <- proj_proj_string_type_code(assert_chr1(proj_string_type, "proj_string_type"))
+  if (identical(proj_string_type, NA_integer_)) {
+    stop("Invalid value for `proj_string_type`", call. = FALSE)
+  }
+
+  .Call(proj_c_as_proj_string, as_proj(pj), proj_string_type, options, ctx)
 }
 
 #' @rdname proj_info
 #' @export
 proj_as_projjson <- function(pj, options = NULL, ctx = proj_context()) {
-
+  options <- as.character(options[!is.na(options)])
+  .Call(proj_c_as_projjson, as_proj(pj), options, ctx)
 }
 
 #' @export
