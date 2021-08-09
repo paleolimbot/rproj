@@ -149,9 +149,8 @@ as_proj.character <- function(x, ..., ctx = proj_context()) {
 
 #' PROJ object information
 #'
-#' @param obj A [PROJ object][proj_create]
 #' @param other Another [PROJ object][proj_create] against which
-#'   `obj` should be compared
+#'   `pj` should be compared
 #' @param criterion An equivalence criterion. One of "strict",
 #'   "equivalent", or "equivalent_except_axis_order_geogcrs".
 #' @param wkt_type One of "wkt2_2015", "wkt_2015_simplified",
@@ -164,25 +163,25 @@ as_proj.character <- function(x, ..., ctx = proj_context()) {
 #'
 #' @export
 #'
-proj_info <- function(obj) {
-  new_data_frame(.Call(proj_c_proj_info, as_proj(obj)))
+proj_info <- function(pj) {
+  new_data_frame(.Call(proj_c_proj_info, as_proj(pj)))
 }
 
 #' @rdname proj_info
 #' @export
-proj_get_type <- function(obj) {
-  proj_type_name(.Call(proj_c_get_type, as_proj(obj)))
+proj_get_type <- function(pj) {
+  proj_type_name(.Call(proj_c_get_type, as_proj(pj)))
 }
 
 #' @rdname proj_info
 #' @export
-proj_is_deprecated <- function(obj) {
-  .Call(proj_c_is_deprecated, as_proj(obj))
+proj_is_deprecated <- function(pj) {
+  .Call(proj_c_is_deprecated, as_proj(pj))
 }
 
 #' @rdname proj_info
 #' @export
-proj_is_equivalent_to <- function(obj, other, criterion = NULL, ctx = proj_context()) {
+proj_is_equivalent_to <- function(pj, other, criterion = NULL, ctx = proj_context()) {
   if (is.null(criterion)) {
     criterion <- "strict"
   }
@@ -194,7 +193,7 @@ proj_is_equivalent_to <- function(obj, other, criterion = NULL, ctx = proj_conte
 
   .Call(
     proj_c_is_equivalent_to,
-    as_proj(obj),
+    as_proj(pj),
     as_proj(other),
     criterion,
     ctx
@@ -203,26 +202,26 @@ proj_is_equivalent_to <- function(obj, other, criterion = NULL, ctx = proj_conte
 
 #' @rdname proj_info
 #' @export
-proj_is_crs <- function(obj) {
-  .Call(proj_c_is_crs, as_proj(obj))
+proj_is_crs <- function(pj) {
+  .Call(proj_c_is_crs, as_proj(pj))
 }
 
 #' @rdname proj_info
 #' @export
-proj_get_remarks <- function(obj) {
-  .Call(proj_c_get_remarks, as_proj(obj))
+proj_get_remarks <- function(pj) {
+  .Call(proj_c_get_remarks, as_proj(pj))
 }
 
 #' @rdname proj_info
 #' @export
-proj_get_scope <- function(obj) {
-  .Call(proj_c_get_scope, as_proj(obj))
+proj_get_scope <- function(pj) {
+  .Call(proj_c_get_scope, as_proj(pj))
 }
 
 #' @rdname proj_info
 #' @export
-proj_get_area_of_use <- function(obj) {
-  raw <- .Call(proj_c_get_area_of_use, as_proj(obj))
+proj_get_area_of_use <- function(pj) {
+  raw <- .Call(proj_c_get_area_of_use, as_proj(pj))
   new_data_frame(
     list(
       name = raw[[2]],
@@ -236,21 +235,31 @@ proj_get_area_of_use <- function(obj) {
 
 #' @rdname proj_info
 #' @export
-proj_as_wkt <- function(obj, wkt_type = NULL, options = NULL,
+proj_as_wkt <- function(pj, wkt_type = NULL, options = character(),
                         ctx = proj_context()) {
+  options <- as.character(options[!is.na(options)])
+  if (is.null(wkt_type)) {
+    wkt_type <- "WKT2_2015"
+  }
 
+  wkt_type <- proj_wkt_type_code(assert_chr1(wkt_type, "wkt_type"))
+  if (identical(wkt_type, NA_integer_)) {
+    stop("Invalid value for `wkt_type`", call. = FALSE)
+  }
+
+  .Call(proj_c_as_wkt, as_proj(pj), wkt_type, options, ctx)
 }
 
 #' @rdname proj_info
 #' @export
-proj_as_proj_string <- function(obj, proj_string_type = NULL, options = NULL,
+proj_as_proj_string <- function(pj, proj_string_type = NULL, options = NULL,
                                 ctx = proj_context()) {
 
 }
 
 #' @rdname proj_info
 #' @export
-proj_as_projjson <- function(obj, options = NULL, ctx = proj_context()) {
+proj_as_projjson <- function(pj, options = NULL, ctx = proj_context()) {
 
 }
 

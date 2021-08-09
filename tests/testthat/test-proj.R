@@ -145,6 +145,13 @@ test_that("proj_get_area_of_use() works", {
   expect_error(proj_get_area_of_use("+proj=noop"))
 })
 
+test_that("proj_as_wkt() works", {
+  expect_match(proj_as_wkt("EPSG:4326"), "^GEODCRS")
+  wkt_oneline <- proj_as_wkt("EPSG:4326", options = "MULTILINE=NO")
+  expect_false(grepl("\n", wkt_oneline))
+  expect_error(proj_as_wkt("EPSG:4326", options = "NOT_AN_OPTION"), "error")
+})
+
 test_that("print and format methods work", {
   expect_match(format(proj_create("+proj=noop")), "<proj")
   p <- proj_create("+proj=noop")

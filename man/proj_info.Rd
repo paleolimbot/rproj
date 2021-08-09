@@ -14,38 +14,38 @@
 \alias{proj_as_projjson}
 \title{PROJ object information}
 \usage{
-proj_info(obj)
+proj_info(pj)
 
-proj_get_type(obj)
+proj_get_type(pj)
 
-proj_is_deprecated(obj)
+proj_is_deprecated(pj)
 
-proj_is_equivalent_to(obj, other, criterion = NULL, ctx = proj_context())
+proj_is_equivalent_to(pj, other, criterion = NULL, ctx = proj_context())
 
-proj_is_crs(obj)
+proj_is_crs(pj)
 
-proj_get_remarks(obj)
+proj_get_remarks(pj)
 
-proj_get_scope(obj)
+proj_get_scope(pj)
 
-proj_get_area_of_use(obj)
+proj_get_area_of_use(pj)
 
-proj_as_wkt(obj, wkt_type = NULL, options = NULL, ctx = proj_context())
+proj_as_wkt(pj, wkt_type = NULL, options = character(), ctx = proj_context())
 
 proj_as_proj_string(
-  obj,
+  pj,
   proj_string_type = NULL,
   options = NULL,
   ctx = proj_context()
 )
 
-proj_as_projjson(obj, options = NULL, ctx = proj_context())
+proj_as_projjson(pj, options = NULL, ctx = proj_context())
 }
 \arguments{
-\item{obj}{A \link[=proj_create]{PROJ object}}
+\item{pj}{A PROJ object or definition coerced using \code{\link[=as_proj]{as_proj()}}.}
 
 \item{other}{Another \link[=proj_create]{PROJ object} against which
-\code{obj} should be compared}
+\code{pj} should be compared}
 
 \item{criterion}{An equivalence criterion. One of "strict",
 "equivalent", or "equivalent_except_axis_order_geogcrs".}
