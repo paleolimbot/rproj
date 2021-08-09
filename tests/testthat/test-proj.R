@@ -71,6 +71,36 @@ test_that("proj_get_non_deprecated() works", {
   expect_error(proj_get_non_deprecated("+proj=noop"), "error")
 })
 
+test_that("proj_normalize_for_visualization() works", {
+  crs84 <- proj_create("OGC:CRS84")
+  expect_identical(
+    proj_info(proj_normalize_for_visualization(crs84))$description,
+    proj_info(crs84)$description
+  )
+
+  # proj_normalize_for_visualization uses the debug log level
+  # instead of the error one, so sink() these messages until
+  # the problem is fixed
+  temp <- tempfile()
+  tempf <- file(temp, open = "w")
+  sink(tempf, type = "message")
+  expect_error(proj_normalize_for_visualization("+proj=noop"), "error")
+  sink(type = "message")
+  close(tempf)
+  unlink(temp)
+})
+
+test_that("proj_is_equivalent_to() works", {
+  expect_true(proj_is_equivalent_to("EPSG:4326", "EPSG:4326", "strict"))
+  expect_false(proj_is_equivalent_to("EPSG:4326", "OGC:CRS84", "strict"))
+  expect_true(
+    proj_is_equivalent_to(
+      "EPSG:4326", "OGC:CRS84",
+      "equivalent_except_axis_order_geogcrs"
+    )
+  )
+})
+
 test_that("proj_identify() works", {
   id <- proj_identify("OGC:CRS84", "OGC")
   expect_equal(nrow(id), 1)

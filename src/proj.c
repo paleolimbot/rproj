@@ -197,6 +197,22 @@ SEXP proj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr) {
   return source_crs_xptr;
 }
 
+SEXP proj_c_normalize_for_visualization(SEXP pj_xptr, SEXP ctx_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+
+  PJ* pj_out = proj_normalize_for_visualization(ctx, pj);
+  if (pj_out == NULL) {
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  SEXP pj_out_xptr = PROTECT(R_MakeExternalPtr(pj_out, ctx_xptr, R_NilValue));
+  R_RegisterCFinalizer(pj_out_xptr, &proj_xptr_destroy);
+  Rf_setAttrib(pj_out_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  UNPROTECT(1);
+  return pj_out_xptr;
+}
+
 SEXP proj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr) {
   PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
@@ -318,6 +334,17 @@ SEXP proj_c_is_deprecated(SEXP pj_xptr) {
 SEXP proj_c_is_crs(SEXP pj_xptr) {
   PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
   return Rf_ScalarLogical(proj_is_crs(pj));
+}
+
+SEXP proj_c_is_equivalent_to(SEXP pj_xptr, SEXP other_xptr,
+                             SEXP criterion_sexp, SEXP ctx_xptr) {
+
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ* other = rlibproj_pj_from_xptr(other_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+
+  int criterion = INTEGER(criterion_sexp)[0];
+  return Rf_ScalarLogical(proj_is_equivalent_to_with_ctx(ctx, pj, other, criterion));
 }
 
 SEXP proj_c_get_remarks(SEXP pj_xptr) {

@@ -20,7 +20,7 @@ proj_get_type(obj)
 
 proj_is_deprecated(obj)
 
-proj_is_equivalent_to(obj, other, criterion)
+proj_is_equivalent_to(obj, other, criterion = NULL, ctx = proj_context())
 
 proj_is_crs(obj)
 
@@ -50,14 +50,14 @@ proj_as_projjson(obj, options = NULL, ctx = proj_context())
 \item{criterion}{An equivalence criterion. One of "strict",
 "equivalent", or "equivalent_except_axis_order_geogcrs".}
 
+\item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
+
 \item{wkt_type}{One of "wkt2_2015", "wkt_2015_simplified",
 "wkt2_2019", "wkt2_2019_simplified", "wkt1_gdal", or
 "wkt1_esri". Use \code{NULL} for the recommended default
 (wkt2_2019).}
 
 \item{options}{String of additional options for various methods.}
-
-\item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
 
 \item{proj_string_type}{One of "proj_4" or "proj_5"}
 }

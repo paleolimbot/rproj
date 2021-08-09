@@ -12,12 +12,14 @@ extern SEXP proj_c_context_get_user_writable_directory(SEXP context_xptr);
 extern SEXP proj_c_context_get_use_proj4_init_rules(SEXP context_xptr);
 extern SEXP proj_c_context_get_database_path(SEXP context_xptr);
 extern SEXP proj_c_type_name(SEXP type_sexp);
+extern SEXP proj_c_comp_name(SEXP type_sexp);
 extern SEXP proj_c_init();
 extern SEXP proj_c_version_build();
 extern SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp);
 extern SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr, SEXP source_crs_xptr, SEXP target_crs_xptr, SEXP area_sexp, SEXP options_sexp);
 extern SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp);
 extern SEXP proj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr);
+extern SEXP proj_c_normalize_for_visualization(SEXP pj_xptr, SEXP ctx_xptr);
 extern SEXP proj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr);
 extern SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr);
 extern SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr);
@@ -25,6 +27,7 @@ extern SEXP proj_c_proj_info(SEXP pj_xptr);
 extern SEXP proj_c_get_type(SEXP pj_xptr);
 extern SEXP proj_c_is_deprecated(SEXP pj_xptr);
 extern SEXP proj_c_is_crs(SEXP pj_xptr);
+extern SEXP proj_c_is_equivalent_to(SEXP pj_xptr, SEXP other_xptr, SEXP criterion_sexp, SEXP ctx_xptr);
 extern SEXP proj_c_get_remarks(SEXP pj_xptr);
 extern SEXP proj_c_get_scope(SEXP pj_xptr);
 extern SEXP proj_c_get_area_of_use(SEXP pj_xptr);
@@ -38,12 +41,14 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_context_get_use_proj4_init_rules", (DL_FUNC) &proj_c_context_get_use_proj4_init_rules, 1},
   {"proj_c_context_get_database_path", (DL_FUNC) &proj_c_context_get_database_path, 1},
   {"proj_c_type_name", (DL_FUNC) &proj_c_type_name, 1},
+  {"proj_c_comp_name", (DL_FUNC) &proj_c_comp_name, 1},
   {"proj_c_init", (DL_FUNC) &proj_c_init, 0},
   {"proj_c_version_build", (DL_FUNC) &proj_c_version_build, 0},
   {"proj_c_create", (DL_FUNC) &proj_c_create, 2},
   {"proj_c_create_crs_to_crs", (DL_FUNC) &proj_c_create_crs_to_crs, 5},
   {"proj_c_create_from_wkt", (DL_FUNC) &proj_c_create_from_wkt, 3},
   {"proj_c_get_source_crs", (DL_FUNC) &proj_c_get_source_crs, 2},
+  {"proj_c_normalize_for_visualization", (DL_FUNC) &proj_c_normalize_for_visualization, 2},
   {"proj_c_get_target_crs", (DL_FUNC) &proj_c_get_target_crs, 2},
   {"proj_c_get_non_deprecated", (DL_FUNC) &proj_c_get_non_deprecated, 2},
   {"proj_c_identify", (DL_FUNC) &proj_c_identify, 3},
@@ -51,6 +56,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_get_type", (DL_FUNC) &proj_c_get_type, 1},
   {"proj_c_is_deprecated", (DL_FUNC) &proj_c_is_deprecated, 1},
   {"proj_c_is_crs", (DL_FUNC) &proj_c_is_crs, 1},
+  {"proj_c_is_equivalent_to", (DL_FUNC) &proj_c_is_equivalent_to, 4},
   {"proj_c_get_remarks", (DL_FUNC) &proj_c_get_remarks, 1},
   {"proj_c_get_scope", (DL_FUNC) &proj_c_get_scope, 1},
   {"proj_c_get_area_of_use", (DL_FUNC) &proj_c_get_area_of_use, 1},

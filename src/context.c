@@ -22,8 +22,7 @@ void rlibproj_logger_fun(void* data, int level, const char* msg) {
     }
   }
 
-
-  REprintf(msg);
+  REprintf("%s\n", msg);
 }
 
 SEXP rlibproj_logger_create() {

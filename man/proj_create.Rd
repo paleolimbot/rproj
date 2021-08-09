@@ -4,7 +4,6 @@
 \alias{proj_create}
 \alias{proj_create_crs_to_crs}
 \alias{proj_create_from_wkt}
-\alias{proj_guess_wkt_dialect}
 \alias{proj_get_source_crs}
 \alias{proj_get_target_crs}
 \alias{proj_identify}
@@ -26,8 +25,6 @@ proj_create_crs_to_crs(
 )
 
 proj_create_from_wkt(wkt, options = character(), ctx = proj_context())
-
-proj_guess_wkt_dialect(wkt, ctx = proj_context())
 
 proj_get_source_crs(pj, ctx = proj_context())
 

@@ -3,6 +3,18 @@
 #include <Rinternals.h>
 #include "libproj.h"
 
+SEXP rlibproj_enum_name(SEXP type_sexp, const char* (*func)(int code)) {
+  R_xlen_t n = Rf_xlength(type_sexp);
+  int* type = INTEGER(type_sexp);
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, Rf_xlength(type_sexp)));
+  for (R_xlen_t i = 0; i < n; i++) {
+    SET_STRING_ELT(out, i, Rf_mkChar(func(type[i])));
+  }
+  UNPROTECT(1);
+  return out;
+}
+
+
 const char* rlibproj_type(int type) {
   switch(type) {
   case PJ_TYPE_UNKNOWN: return "UNKNOWN";
@@ -44,12 +56,19 @@ const char* rlibproj_type(int type) {
 }
 
 SEXP proj_c_type_name(SEXP type_sexp) {
-  R_xlen_t n = Rf_xlength(type_sexp);
-  int* type = INTEGER(type_sexp);
-  SEXP out = PROTECT(Rf_allocVector(STRSXP, Rf_xlength(type_sexp)));
-  for (R_xlen_t i = 0; i < n; i++) {
-    SET_STRING_ELT(out, i, Rf_mkChar(rlibproj_type(type[i])));
+  return rlibproj_enum_name(type_sexp, &rlibproj_type);
+}
+
+const char* rlibproj_comp(int comparison_criterion) {
+  switch(comparison_criterion) {
+  case PJ_COMP_STRICT: return "STRICT";
+  case PJ_COMP_EQUIVALENT: return "EQUIVALENT";
+  case PJ_COMP_EQUIVALENT_EXCEPT_AXIS_ORDER_GEOGCRS:
+    return "EQUIVALENT_EXCEPT_AXIS_ORDER_GEOGCRS";
+  default: return "";
   }
-  UNPROTECT(1);
-  return out;
+}
+
+SEXP proj_c_comp_name(SEXP type_sexp) {
+  return rlibproj_enum_name(type_sexp, &rlibproj_comp);
 }

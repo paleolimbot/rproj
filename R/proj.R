@@ -79,12 +79,6 @@ proj_create_from_wkt <- function(wkt, options = character(), ctx = proj_context(
 
 #' @rdname proj_create
 #' @export
-proj_guess_wkt_dialect <- function(wkt, ctx = proj_context()) {
-
-}
-
-#' @rdname proj_create
-#' @export
 proj_get_source_crs <- function(pj, ctx = proj_context()) {
   .Call(proj_c_get_source_crs, as_proj(pj), ctx)
 }
@@ -131,7 +125,7 @@ proj_get_non_deprecated <- function(pj, ctx = proj_context()) {
 #' @rdname proj_create
 #' @export
 proj_normalize_for_visualization <- function(pj, ctx = proj_context()) {
-
+  .Call(proj_c_normalize_for_visualization, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create
@@ -188,8 +182,18 @@ proj_is_deprecated <- function(obj) {
 
 #' @rdname proj_info
 #' @export
-proj_is_equivalent_to <- function(obj, other, criterion) {
+proj_is_equivalent_to <- function(obj, other, criterion = NULL, ctx = proj_context()) {
+  if (is.null(criterion)) {
+    criterion <- "strict"
+  }
 
+  .Call(
+    proj_c_is_equivalent_to,
+    as_proj(obj),
+    as_proj(other),
+    proj_comp_code(criterion),
+    ctx
+  )
 }
 
 #' @rdname proj_info
