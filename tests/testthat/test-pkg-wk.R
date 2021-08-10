@@ -1,4 +1,9 @@
 
+test_that("wk trans can be printed", {
+  tr <- wk::as_wk_trans(proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857"))
+  expect_output(print(tr), "direction FWD")
+})
+
 test_that("wk trans works", {
   tr <- wk::as_wk_trans(proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857"))
   expect_equal(

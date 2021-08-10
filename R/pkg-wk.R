@@ -26,7 +26,7 @@ as_wk_trans.rlibproj_proj <- function(x, ..., use_z = NA, use_m = NA, verbose = 
   # to get around the log_level of whatever context created
   # `x`, we can make a clone
   if (!isTRUE(verbose)) {
-    x <- proj_clone_operation(
+    x <- proj_clone(
       x,
       ctx = proj_context_create(log_level = 0, ctx = proj_get_context(x))
     )
@@ -48,12 +48,21 @@ wk_trans_inverse.rlibproj_trans_proj <- function(trans) {
   )
 }
 
-proj_clone_operation <- function(pj, ctx = proj_context()) {
-  # this isn't defined in the API but we need it to
-  # mess with the log level as the defaults are a little
-  # trigger happy with sending an "error" log.
-  # this approach doesn't keep all the information but will
-  # result in the same pipeline being applied (which is
-  # all we care about for the transform)
-  proj_create(proj_make_compact_definition(pj), ctx = ctx)
+#' @export
+print.rlibproj_trans_proj <- function(x, ...) {
+  pj <- .Call(proj_c_trans_get_pj, x)
+  direction <- .Call(proj_c_trans_get_direction, x)
+
+  cat(
+    sprintf(
+      "<wk::new_wk_trans() at %s, direction %s -> ",
+      proj_xptr_addr(x),
+      proj_direction_name(direction)
+    )
+  )
+
+  print(pj)
+
+  invisible(x)
 }
+

@@ -78,7 +78,7 @@ SEXP proj_c_trans_inverse(SEXP trans_xptr) {
   if (!Rf_inherits(trans_xptr, "rlibproj_trans_proj")) {
     Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
   }
-  wk_trans_t* trans_template = R_ExternalPtrAddr(trans_xptr);
+  wk_trans_t* trans_template = (wk_trans_t*) R_ExternalPtrAddr(trans_xptr);
 
   // create the trans object
   wk_trans_t* trans = wk_trans_create();
@@ -114,4 +114,22 @@ SEXP proj_c_trans_inverse(SEXP trans_xptr) {
 
   // keep the pj_xptr as a tag because we need the PJ* to stay valid
   return wk_trans_create_xptr(trans, R_ExternalPtrTag(trans_xptr), R_NilValue);
+}
+
+SEXP proj_c_trans_get_pj(SEXP trans_xptr) {
+  if (!Rf_inherits(trans_xptr, "rlibproj_trans_proj")) {
+    Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
+  }
+
+  return R_ExternalPtrTag(trans_xptr);
+}
+
+SEXP proj_c_trans_get_direction(SEXP trans_xptr) {
+  if (!Rf_inherits(trans_xptr, "rlibproj_trans_proj")) {
+    Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
+  }
+
+  wk_trans_t* trans = (wk_trans_t*) R_ExternalPtrAddr(trans_xptr);
+  rlibproj_trans_proj_t* data = (rlibproj_trans_proj_t*) trans->trans_data;
+  return Rf_ScalarInteger(data->direction);
 }

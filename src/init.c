@@ -21,6 +21,8 @@ extern SEXP proj_c_init();
 extern SEXP proj_c_version_build();
 extern SEXP proj_c_trans(SEXP pj_xptr, SEXP use_z_sexp, SEXP use_m_sexp, SEXP direction_sexp);
 extern SEXP proj_c_trans_inverse(SEXP trans_xptr);
+extern SEXP proj_c_trans_get_pj(SEXP trans_xptr);
+extern SEXP proj_c_trans_get_direction(SEXP trans_xptr);
 extern SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp);
 extern SEXP proj_c_clone(SEXP pj_xptr, SEXP ctx_xptr);
 extern SEXP proj_c_get_context(SEXP pj_xptr);
@@ -62,6 +64,8 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_version_build", (DL_FUNC) &proj_c_version_build, 0},
   {"proj_c_trans", (DL_FUNC) &proj_c_trans, 4},
   {"proj_c_trans_inverse", (DL_FUNC) &proj_c_trans_inverse, 1},
+  {"proj_c_trans_get_pj", (DL_FUNC) &proj_c_trans_get_pj, 1},
+  {"proj_c_trans_get_direction", (DL_FUNC) &proj_c_trans_get_direction, 1},
   {"proj_c_create", (DL_FUNC) &proj_c_create, 2},
   {"proj_c_clone", (DL_FUNC) &proj_c_clone, 2},
   {"proj_c_get_context", (DL_FUNC) &proj_c_get_context, 1},
