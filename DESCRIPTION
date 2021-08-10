@@ -25,6 +25,7 @@ LinkingTo:
     wk,
     libproj
 Suggests: 
+    sf,
     testthat (>= 3.0.0)
 Remotes:
     paleolimbot/libproj,
