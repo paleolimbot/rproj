@@ -58,7 +58,8 @@ crs_engine_proj_pipeline.rlibrpoj_crs2crs_engine <- function(engine, handleable,
 #' @importFrom crs2crs crs_engine_proj_pipeline_apply
 #' @export
 crs_engine_proj_pipeline_apply.rlibrpoj_crs2crs_engine <- function(engine, handleable, pipeline, ...) {
-  stop("Not implemented")
+  trans <- as_wk_trans(crs_sanitize_proj_crs(pipeline))
+  wk::wk_transform(handleable, pipeline)
 }
 
 #' @rdname crs_engine_rlibproj

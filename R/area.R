@@ -23,8 +23,29 @@ as_proj_area <- function(handleable) {
     return(handleable)
   }
 
-  # missing: transform to OGC:CRS84
-  xy <- unclass(wk::wk_handle(handleable, wk::wk_vertex_filter(wk::xy_writer())))
+  # transform to OGC:CRS84 (assume NULL as lon/lat)
+  crs <- wk::wk_crs(handleable)
+  if (is.null(crs) || inherits(crs, "wk_crs_inherit")) {
+    to_wgs84 <- wk::wk_affine_identity()
+  } else {
+    pipe <- proj_create_crs_to_crs(crs, "OGC:CRS84")
+    to_wgs84 <- wk::as_wk_trans(pipe)
+  }
+
+  # in the future we could probably use an affine
+  # translate and the bbox handler to avoid resolving
+  # every coordinate into memory
+  xy <- wk::wk_handle(
+    handleable,
+    wk::wk_transform_filter(
+      trans = to_wgs84,
+      wk::wk_vertex_filter(
+        wk::xy_writer()
+      )
+    )
+  )
+
+  xy <- unclass(xy)
 
   if (length(xy$x) == 0) {
     return(c(-180, -90, 180, 90))
