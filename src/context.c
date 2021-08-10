@@ -128,6 +128,13 @@ SEXP proj_c_context_clone(SEXP context_xptr) {
   return ctx_clone_xptr;
 }
 
+SEXP proj_c_context_set_log_level(SEXP context_xptr, SEXP log_level_sexp) {
+  PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
+  int log_level = INTEGER(log_level_sexp)[0];
+  int result = proj_log_level(context, log_level);
+  return Rf_ScalarInteger(result);
+}
+
 SEXP proj_c_context_is_network_enabled(SEXP context_xptr) {
   PJ_CONTEXT* context = rlibproj_ctx_from_xptr(context_xptr);
   int value = proj_context_is_network_enabled(context);

@@ -6,6 +6,7 @@
 \alias{with_proj_context}
 \alias{proj_context_create}
 \alias{proj_context_clone}
+\alias{proj_context_set_log_level}
 \alias{proj_context_is_network_enabled}
 \alias{proj_context_get_url_endpoint}
 \alias{proj_context_get_use_proj4_init_rules}
@@ -31,6 +32,8 @@ proj_context_create(
 )
 
 proj_context_clone(ctx = proj_context())
+
+proj_context_set_log_level(log_level = 1L, ctx = proj_context())
 
 proj_context_is_network_enabled(ctx = proj_context())
 

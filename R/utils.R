@@ -19,6 +19,19 @@ assert_dbl1 <- function(x, arg_name = deparse(substitute(x))) {
   as.numeric(x)
 }
 
+assert_int1 <- function(x, arg_name = deparse(substitute(x))) {
+  if (!is.numeric(x) || (length(x) != 1)) {
+    stop(sprintf("`%s` must be numeric of length 1", arg_name), call. = FALSE)
+  }
+
+  xint <- as.integer(x)
+  if (!is.na(xint) && !isTRUE(xint == x)) {
+    stop(sprintf("`%s` must be an integer of length 1", arg_name), call. = FALSE)
+  }
+
+  xint
+}
+
 assert_lgl1 <- function(x, arg_name = deparse(substitute(x))) {
   if (!is.logical(x) || (length(x) != 1)) {
     stop(sprintf("`%s` must be logical of length 1", arg_name), call. = FALSE)

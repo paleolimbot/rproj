@@ -4,6 +4,11 @@ test_that("proj_create() works", {
   expect_error(proj_create("+proj=not_a_proj"), "Unknown projection")
 })
 
+test_that("proj_get_context() works", {
+  ctx <- proj_context_create()
+  expect_identical(proj_get_context(proj_create("+proj=noop", ctx)), ctx)
+})
+
 test_that("proj_create_crs_to_crs() works", {
   noop <- proj_create_crs_to_crs("OGC:CRS84", "OGC:CRS84")
   expect_match(proj_info(noop)$definition, "noop")

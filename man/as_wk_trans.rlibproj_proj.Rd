@@ -5,7 +5,7 @@
 \alias{wk_trans_inverse.rlibproj_trans_proj}
 \title{Get wk package transforms}
 \usage{
-\method{as_wk_trans}{rlibproj_proj}(x, ..., use_z = NA, use_m = NA)
+\method{as_wk_trans}{rlibproj_proj}(x, ..., use_z = NA, use_m = NA, verbose = FALSE)
 
 \method{wk_trans_inverse}{rlibproj_trans_proj}(trans)
 }
@@ -19,6 +19,11 @@ in the result or \code{FALSE} to explicitly omit it. Use \code{NA}
 to leave the dimensions of the output the same as the input.
 Use a length two vector to specify the dimensionality
 of the inverse transform.}
+
+\item{verbose}{Use \code{FALSE} to keep log output during transforms.
+This is usually not what you want, since you might be transforming
+millions of coordinates (which may result in millions of log
+messages).}
 
 \item{trans}{A transform created with \code{\link[wk:wk_trans_inverse]{wk::as_wk_trans()}}
 on a \link[=proj_create]{PROJ object}.}

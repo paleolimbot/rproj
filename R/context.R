@@ -52,6 +52,7 @@ proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_pa
                                 log_level = NULL, ctx = NULL) {
   if (is.null(ctx)) {
     ctx <- .Call(proj_c_pj_default_ctx)
+    attr(ctx, "config") <- libproj::libproj_configuration()
   }
 
   config <- list(
@@ -67,6 +68,7 @@ proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_pa
   config <- config[!vapply(config, is.null, logical(1))]
   config <- c(config, libproj_config)[names(libproj_config)]
   new_ctx <- libproj::with_libproj_configuration(config, proj_context_clone(ctx))
+  proj_context_set_log_level(config$log_level, new_ctx)
 
   # not all config values can be retrieved, so save them as an attribute
   attr(new_ctx, "config") <- config
@@ -77,7 +79,28 @@ proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_pa
 #' @rdname proj_context
 #' @export
 proj_context_clone <- function(ctx = proj_context()) {
-  .Call(proj_c_context_clone, ctx)
+  new_ctx <- .Call(proj_c_context_clone, ctx)
+
+  # apparently the log level doesn't survive the clone operation
+  if (!is.null(attr(ctx, "config"))) {
+    proj_context_set_log_level(attr(ctx, "config")$log_level, new_ctx)
+  } else {
+    proj_context_set_log_level(1L, new_ctx)
+  }
+
+  new_ctx
+}
+
+#' @rdname proj_context
+#' @export
+proj_context_set_log_level <- function(log_level = 1L, ctx = proj_context()) {
+  log_level <- assert_int1(log_level)
+  stopifnot(log_level >= 0, log_level <= 4)
+  result <- .Call(proj_c_context_set_log_level, ctx, log_level)
+  if (!is.null(attr(ctx, "config"))) {
+    attr(ctx, "config")$log_level <- log_level
+  }
+  invisible(result)
 }
 
 #' @rdname proj_context
@@ -143,6 +166,8 @@ print.rlibproj_context <- function(x, ...) {
   if (proj_context_get_use_proj4_init_rules(x)) {
     cat("* Using PROJ4 '+init' rules\n")
   }
+
+  cat(sprintf("* Log level: %d\n", attr(x, "config")$log_level))
 
   invisible(x)
 }

@@ -5,6 +5,14 @@ test_that("proj_context() works", {
   expect_output(print(proj_context()), "proj_context")
 })
 
+test_that("proj_context_set_log_level() works", {
+  new_ctx <- proj_context_create(log_level = 2L)
+  expect_identical(proj_context_set_log_level(3, new_ctx), 2L)
+  expect_identical(attr(new_ctx, "config")$log_level, 3L)
+  expect_identical(proj_context_set_log_level(2, new_ctx), 3L)
+  expect_identical(attr(new_ctx, "config")$log_level, 2L)
+})
+
 test_that("with_proj_context() works", {
   current_net <- proj_context_is_network_enabled()
   with_proj_context(proj_context_create(network_enabled = !current_net), {

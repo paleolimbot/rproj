@@ -76,6 +76,11 @@ SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp) {
   return pj_xptr;
 }
 
+SEXP proj_c_get_context(SEXP pj_xptr) {
+  rlibproj_pj_from_xptr(pj_xptr);
+  return R_ExternalPtrTag(pj_xptr);
+}
+
 SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr,
                               SEXP source_crs_xptr, SEXP target_crs_xptr,
                               SEXP area_sexp, SEXP options_sexp) {

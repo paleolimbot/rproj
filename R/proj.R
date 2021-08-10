@@ -29,6 +29,12 @@ proj_create <- function(definition, ctx = proj_context()) {
 
 #' @rdname proj_create
 #' @export
+proj_get_context <- function(pj) {
+  .Call(proj_c_get_context, pj)
+}
+
+#' @rdname proj_create
+#' @export
 proj_create_crs_to_crs <- function(source_crs, target_crs, area = NULL,
                                    options = character(), ctx = proj_context()) {
   if (!is.null(area)) {

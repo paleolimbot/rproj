@@ -2,6 +2,7 @@
 % Please edit documentation in R/proj.R
 \name{proj_create}
 \alias{proj_create}
+\alias{proj_get_context}
 \alias{proj_create_crs_to_crs}
 \alias{proj_create_from_wkt}
 \alias{proj_get_source_crs}
@@ -15,6 +16,8 @@
 \title{Create PROJ objects}
 \usage{
 proj_create(definition, ctx = proj_context())
+
+proj_get_context(pj)
 
 proj_create_crs_to_crs(
   source_crs,
@@ -49,6 +52,8 @@ understands.}
 
 \item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
 
+\item{pj}{A PROJ object or definition coerced using \code{\link[=as_proj]{as_proj()}}.}
+
 \item{source_crs, target_crs}{Source and/or target CRS definitions,
 coerced using \code{\link[=as_proj]{as_proj()}}.}
 
@@ -58,8 +63,6 @@ best available transformation.}
 \item{options}{Options for instantiating the object by name}
 
 \item{wkt}{A well-known text definition of the PROJ object.}
-
-\item{pj}{A PROJ object or definition coerced using \code{\link[=as_proj]{as_proj()}}.}
 
 \item{auth_name}{An authority name (e.g., "EPSG" or "OGC")}
 
