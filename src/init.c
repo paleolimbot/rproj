@@ -18,6 +18,8 @@ extern SEXP proj_c_proj_string_type(SEXP code_sexp);
 extern SEXP proj_c_direction_name(SEXP code_sexp);
 extern SEXP proj_c_init();
 extern SEXP proj_c_version_build();
+extern SEXP proj_c_trans(SEXP pj_xptr, SEXP use_z_sexp, SEXP use_m_sexp, SEXP direction_sexp);
+extern SEXP proj_c_trans_inverse(SEXP trans_xptr);
 extern SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp);
 extern SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr, SEXP source_crs_xptr, SEXP target_crs_xptr, SEXP area_sexp, SEXP options_sexp);
 extern SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp);
@@ -54,6 +56,8 @@ static const R_CallMethodDef CallEntries[] = {
   {"proj_c_direction_name", (DL_FUNC) &proj_c_direction_name, 1},
   {"proj_c_init", (DL_FUNC) &proj_c_init, 0},
   {"proj_c_version_build", (DL_FUNC) &proj_c_version_build, 0},
+  {"proj_c_trans", (DL_FUNC) &proj_c_trans, 4},
+  {"proj_c_trans_inverse", (DL_FUNC) &proj_c_trans_inverse, 1},
   {"proj_c_create", (DL_FUNC) &proj_c_create, 2},
   {"proj_c_create_crs_to_crs", (DL_FUNC) &proj_c_create_crs_to_crs, 5},
   {"proj_c_create_from_wkt", (DL_FUNC) &proj_c_create_from_wkt, 3},
