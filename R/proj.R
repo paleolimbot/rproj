@@ -279,20 +279,135 @@ proj_as_projjson <- function(pj, options = NULL, ctx = proj_context()) {
 proj_as_projjson_parsed <- function(pj) {
   jsonlite::fromJSON(
     proj_as_projjson(pj, options = "MULTILINE=NO"),
-    simplifyVector = TRUE
+    simplifyVector = TRUE,
+    simplifyDataFrame = FALSE
+  )
+}
+
+proj_make_compact_definition <- function(pj, multiline = FALSE) {
+  # for CRS, try to get an authority:code definition
+  # otherwise, export as a PROJ5 string
+  multiline_option <- if (multiline) "MULTILINE=YES" else "MULTILINE=NO"
+
+  if (proj_is_crs(pj)) {
+    id <- pj$id
+    if (!is.null(id)) {
+      return(paste0(id$authority, ":", id$code))
+    }
+    # try to identify this CRS using EPSG, then OGC, then ESRI
+    proj_id <- proj_identify(pj, auth_name = c("EPSG", "OGC", "ESRI"))
+
+    # keep to definitive results
+    proj_id <- proj_id[proj_id$confidence == 100, , drop = FALSE]
+
+    if (nrow(proj_id) > 0) {
+      id <- proj_id$pj[[1]]$id
+      if (!is.null(id)) {
+        return(paste0(id$authority, ":", id$code))
+      }
+    }
+
+    return(proj_as_wkt(pj, options = multiline_option))
+  }
+
+  tryCatch(
+    proj_as_proj_string(pj, "PROJ_5", options = multiline_option),
+    error = function(e) {
+      proj_as_wkt(pj, options = multiline_option) # nocov
+    }
   )
 }
 
 #' @export
 format.rlibproj_proj <- function(x, ...) {
-  sprintf("<proj at %s [%s]>\n", proj_xptr_addr(x), proj_get_type(x))
+  proj_make_compact_definition(x)
+}
+
+#' @export
+#' @importFrom utils str
+str.rlibproj_proj <- function(object, ...) {
+  cat(sprintf("<rlibproj_proj at %s> %s\n", proj_xptr_addr(object), format(object)))
+  invisible(object)
 }
 
 #' @export
 print.rlibproj_proj <- function(x, ...) {
-  cat(sprintf("<proj at %s [%s]>\n", proj_xptr_addr(x), proj_get_type(x)))
-  cat(sprintf("* Description: %s\n", proj_info(x)$description))
+  cat(sprintf("<rlibproj_proj at %s>\n", proj_xptr_addr(x)))
+
+  parsed <- print_parsed(x)
+
+  # for a source_crs->target_crs pipeline, display the source and
+  # target CRS
+  if (!is.null(parsed$source_crs)) {
+    cat("* proj_get_source_crs():\n")
+    print_parsed(proj_get_source_crs(x), parsed$source_crs, "  ")
+  }
+
+  if (!is.null(parsed$target_crs)) {
+    cat("* proj_get_target_crs():\n")
+    print_parsed(proj_get_target_crs(x), parsed$target_crs, "  ")
+  }
+
   invisible(x)
+}
+
+print_parsed <- function(x, parsed = proj_as_projjson_parsed(x), indent = "") {
+  if (!is.null(x)) {
+    def <- proj_make_compact_definition(x, multiline = TRUE)
+    cat(
+      sprintf(
+        "%s* Compact definition:\n  %s%s\n",
+        indent, indent,
+        gsub("\n", paste0("\n  ", indent), def)
+      )
+    )
+  } else if(!is.null(parsed$id)) {
+    cat(
+      sprintf(
+        "%s *Compact definition:\n  %s%s:%s\n",
+        indent, indent, parsed$id$authority, parsed$id$code
+      )
+    )
+  }
+
+  properties <- list(
+    "type", "name", "scope", "area",
+    c("coordinate_system", "subtype"),
+    c("method", "name")
+  )
+
+  for (nm in properties) {
+    v <- try(parsed[[nm]], silent = TRUE)
+    if (!is.null(v) && !inherits(v, "try-error")) {
+      cat(
+        sprintf(
+          "%s* $%s: %s\n",
+          indent,
+          paste(nm, collapse = "$"),
+          paste0('"', v, '"', collapse = ", ")
+        )
+      )
+    }
+  }
+
+  # for any coordinate system with axes, list axes
+  if (!is.null(parsed$coordinate_system$axis)) {
+    cat(sprintf("%s* $coordinate_system$axis:\n", indent))
+    for (i in seq_along(parsed$coordinate_system$axis)) {
+      ax <- parsed$coordinate_system$axis[[i]]
+      cat(sprintf("%s  - [[%d]] %s [%s]\n", indent, i, ax$name, ax$unit))
+    }
+  }
+
+  # for a compound crs, print all components
+  if (!is.null(parsed$components)) {
+    for (i in seq_along(parsed$components)) {
+      cat(sprintf("%s* $components[[%d]]:\n", indent, i))
+      print_parsed(NULL, parsed$components[[i]], paste0(indent, "  "))
+    }
+  }
+
+  invisible(parsed)
 }
 
 #' @export
@@ -309,4 +424,9 @@ print.rlibproj_proj <- function(x, ...) {
 #' @export
 names.rlibproj_proj <- function(x) {
   names(proj_as_projjson_parsed(x))
+}
+
+#' @export
+length.rlibproj_proj <- function(x) {
+  length(proj_as_projjson_parsed(x))
 }

@@ -17,7 +17,6 @@ SEXP proj_c_trans_matrix(SEXP pj_xptr, SEXP x_sexp, SEXP direction_sexp,
   int verbose = LOGICAL(verbose_sexp)[0];
 
   int nrow = Rf_nrows(x_sexp);
-  int ncol = Rf_ncols(x_sexp);
   double* x = REAL(x_sexp);
 
   SEXP x_out_sexp = PROTECT(Rf_allocMatrix(REALSXP, nrow, 5));

@@ -171,10 +171,35 @@ test_that("proj_as_projjson() works", {
   expect_error(proj_as_projjson("EPSG:4326", options = "NOT_AN_OPTION"), "error")
 })
 
-test_that("print and format methods work", {
-  expect_match(format(proj_create("+proj=noop")), "<proj")
+test_that("short definition generator works", {
+  crs_with_id <- proj_create("OGC:CRS84")
+  expect_identical(proj_make_compact_definition(crs_with_id), "OGC:CRS84")
+
+  crs_without_id <- proj_create("WGS84")
+  expect_identical(proj_make_compact_definition(crs_without_id), "EPSG:4326")
+
+  crs_nomatch <- proj_create("EPSG:4326+5717")
+  expect_match(proj_make_compact_definition(crs_nomatch), "^COMPOUNDCRS")
+
+  pipeline <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857")
+  expect_match(proj_make_compact_definition(pipeline), "^\\+proj=pipeline")
+})
+
+test_that("print format and str methods work", {
   p <- proj_create("+proj=noop")
-  expect_output(expect_identical(print(p), p), "<proj")
+  expect_match(format(p), "\\+proj=noop")
+  expect_output(expect_identical(print(p), p), "<rlibproj")
+  expect_output(expect_identical(str(p), p), "<rlibproj")
+
+  compound <- proj_create("EPSG:4326+5717")
+  expect_output(print(compound), "\\$components")
+
+  pipeline <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857")
+  expect_output(print(pipeline), "get_source_crs")
+  expect_output(print(pipeline), "get_target_crs")
+
+  conversion <- proj_create("+proj=noop")
+  expect_output(print(conversion), "\\$method")
 })
 
 test_that("list()-like interface works", {
@@ -191,4 +216,5 @@ test_that("list()-like interface works", {
     p[["id"]],
     list(authority = "EPSG", code = 4326L)
   )
+  expect_identical(length(p), length(proj_as_projjson_parsed(p)))
 })

@@ -73,7 +73,7 @@ crs_engine_get_wk_trans.rlibrpoj_crs2crs_engine <- function(engine, handleable, 
 #' @importFrom crs2crs crs_proj_definition
 #' @export
 crs_proj_definition.rlibproj_proj <- function(crs, proj_version = NULL) {
-  stop("Not implemented")
+  proj_make_compact_definition(crs)
 }
 
 
