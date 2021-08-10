@@ -1,0 +1,56 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# rlibproj
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/paleolimbot/rlibproj/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/rlibproj/actions)
+[![Codecov test coverage](https://codecov.io/gh/paleolimbot/rlibproj/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/rlibproj?branch=master)
+<!-- badges: end -->
+
+The goal of rlibproj is to provide a literal wrapper around the PROJ C API. It uses [libproj](https://github.com/paleolimbot/libproj) as a standalone copy of PROJ independent of a system installation.
+
+## Installation
+
+You can install the development version from [R Universe](https://r-universe.dev/) with:
+
+``` r
+install.packages("libproj", repos = "https://paleolimbot.r-universe.dev")
+```
+
+## Example
+
+Create a transform and transform some coordinates:
+
+```{r example}
+library(rlibproj)
+pipe <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3827")
+proj_trans(pipe, proj_coord(-64, 45))
+```
+
+You can transform arbitrary R objects using the [crs2crs interface](https://github.com/paleolimbot/crs2crs):
+
+```{r}
+library(crs2crs)
+crs_set_engine(crs_engine_rlibproj())
+
+library(sf)
+nc <- read_sf(system.file("shape/nc.shp", package = "sf"))
+
+nc %>% 
+  crs_set_longlat(datum = "NAD27") %>% 
+  crs_transform("EPSG:3857")
+```
