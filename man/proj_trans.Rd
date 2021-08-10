@@ -9,19 +9,17 @@ proj_trans(pj, coord, direction = "fwd", verbose = FALSE)
 \arguments{
 \item{pj}{A PROJ object or definition coerced using \code{\link[=as_proj]{as_proj()}}.}
 
+\item{coord}{A matrix with four columns (x, y, z, t)}
+
 \item{direction}{One of "fwd", "ident", or "inv".}
 
 \item{verbose}{Use \code{FALSE} to keep log output during transforms.
 This is usually not what you want, since you might be transforming
 millions of coordinates (which may result in millions of log
 messages).}
-
-\item{x}{An R object}
-
-\item{...}{Passed to S3 methods}
 }
 \value{
-A transformed value of \code{x}
+A transformed value of \code{coord}
 }
 \description{
 Transform coordinates

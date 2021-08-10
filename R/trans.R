@@ -1,16 +1,15 @@
 
 #' Transform coordinates
 #'
-#' @param x An R object
+#' @param coord A matrix with four columns (x, y, z, t)
 #' @inheritParams proj_info
 #' @param direction One of "fwd", "ident", or "inv".
 #' @param verbose Use `FALSE` to keep log output during transforms.
 #'    This is usually not what you want, since you might be transforming
 #'    millions of coordinates (which may result in millions of log
 #'    messages).
-#' @param ... Passed to S3 methods
 #'
-#' @return A transformed value of `x`
+#' @return A transformed value of `coord`
 #' @export
 #'
 #' @examples
