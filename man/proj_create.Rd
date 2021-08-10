@@ -2,6 +2,7 @@
 % Please edit documentation in R/proj.R
 \name{proj_create}
 \alias{proj_create}
+\alias{proj_clone}
 \alias{proj_get_context}
 \alias{proj_create_crs_to_crs}
 \alias{proj_create_from_wkt}
@@ -16,6 +17,8 @@
 \title{Create PROJ objects}
 \usage{
 proj_create(definition, ctx = proj_context())
+
+proj_clone(pj, ctx = proj_context())
 
 proj_get_context(pj)
 

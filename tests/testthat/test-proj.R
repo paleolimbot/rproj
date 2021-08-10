@@ -4,6 +4,13 @@ test_that("proj_create() works", {
   expect_error(proj_create("+proj=not_a_proj"), "Unknown projection")
 })
 
+test_that("proj_clone() works", {
+  ctx <- proj_context_create()
+  p1 <- proj_create("+proj=noop", ctx)
+  expect_true(proj_xptr_addr(proj_clone(p1)) != proj_xptr_addr(p1))
+  expect_identical(proj_get_context(p1), ctx)
+})
+
 test_that("proj_get_context() works", {
   ctx <- proj_context_create()
   expect_identical(proj_get_context(proj_create("+proj=noop", ctx)), ctx)

@@ -76,6 +76,22 @@ SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp) {
   return pj_xptr;
 }
 
+SEXP proj_c_clone(SEXP pj_xptr, SEXP ctx_xptr) {
+  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+
+  PJ* new_pj = proj_clone(ctx, pj);
+  if (new_pj == NULL) {
+    rlibproj_ctx_stop_for_error(ctx_xptr);
+  }
+
+  SEXP new_pj_xptr = PROTECT(R_MakeExternalPtr(new_pj, ctx_xptr, R_NilValue));
+  R_RegisterCFinalizer(new_pj_xptr, &proj_xptr_destroy);
+  Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  UNPROTECT(1);
+  return new_pj_xptr;
+}
+
 SEXP proj_c_get_context(SEXP pj_xptr) {
   rlibproj_pj_from_xptr(pj_xptr);
   return R_ExternalPtrTag(pj_xptr);

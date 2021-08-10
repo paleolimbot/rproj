@@ -29,6 +29,12 @@ proj_create <- function(definition, ctx = proj_context()) {
 
 #' @rdname proj_create
 #' @export
+proj_clone <- function(pj, ctx = proj_context()) {
+  .Call(proj_c_clone, as_proj(pj), ctx)
+}
+
+#' @rdname proj_create
+#' @export
 proj_get_context <- function(pj) {
   .Call(proj_c_get_context, pj)
 }
@@ -340,7 +346,19 @@ str.rlibproj_proj <- function(object, ...) {
 print.rlibproj_proj <- function(x, ...) {
   cat(sprintf("<rlibproj_proj at %s>\n", proj_xptr_addr(x)))
 
-  parsed <- print_parsed(x)
+  # there are some objects (e.g., fresh proj_create_crs_to_crs("NAD27", "NAD83"))
+  # that can't get exported to JSON but do work with proj_info
+  parsed <- try(proj_as_projjson_parsed(x), silent = TRUE)
+  if (inherits(parsed, "try-error")) {
+    info <- proj_info(x)
+    cat("* Object can't be exported to JSON, falling back to proj_info()\n")
+    for (nm in names(info)) {
+      cat(sprintf("* %s: %s\n", nm, info[[nm]]))
+    }
+    return(x)
+  }
+
+  print_parsed(x, parsed)
 
   # for a source_crs->target_crs pipeline, display the source and
   # target CRS
@@ -434,5 +452,5 @@ names.rlibproj_proj <- function(x) {
 
 #' @export
 length.rlibproj_proj <- function(x) {
-  length(proj_as_projjson_parsed(x))
+  tryCatch(length(proj_as_projjson_parsed(x)), error = function(e) NULL)
 }
