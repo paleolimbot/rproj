@@ -2,16 +2,11 @@
 % Please edit documentation in R/trans.R
 \name{proj_trans}
 \alias{proj_trans}
-\alias{proj_trans.matrix}
 \title{Transform coordinates}
 \usage{
-proj_trans(x, pj, direction = "fwd", verbose = FALSE, ...)
-
-\method{proj_trans}{matrix}(x, pj, direction = "fwd", verbose = FALSE, ...)
+proj_trans(pj, coord, direction = "fwd", verbose = FALSE)
 }
 \arguments{
-\item{x}{An R object}
-
 \item{pj}{A PROJ object or definition coerced using \code{\link[=as_proj]{as_proj()}}.}
 
 \item{direction}{One of "fwd", "ident", or "inv".}
@@ -20,6 +15,8 @@ proj_trans(x, pj, direction = "fwd", verbose = FALSE, ...)
 This is usually not what you want, since you might be transforming
 millions of coordinates (which may result in millions of log
 messages).}
+
+\item{x}{An R object}
 
 \item{...}{Passed to S3 methods}
 }
@@ -32,6 +29,6 @@ Transform coordinates
 \examples{
 p <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857")
 x <- proj_coord(-64, 45)
-proj_trans(x, p)
+proj_trans(p, x)
 
 }

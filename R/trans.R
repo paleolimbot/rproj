@@ -16,27 +16,20 @@
 #' @examples
 #' p <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3857")
 #' x <- proj_coord(-64, 45)
-#' proj_trans(x, p)
+#' proj_trans(p, x)
 #'
-proj_trans <- function(x, pj, direction = "fwd", verbose = FALSE, ...) {
-  UseMethod("proj_trans")
-}
-
-#' @rdname proj_trans
-#' @export
-proj_trans.matrix <- function(x, pj, direction = "fwd", verbose = FALSE, ...) {
-  stopifnot(ncol(x) >= 4)
+proj_trans <- function(pj, coord, direction = "fwd", verbose = FALSE) {
+  stopifnot(ncol(coord) >= 4)
   direction <- proj_direction_code(assert_chr1(direction, "direction"))
   if (identical(direction, NA_integer_)) {
     stop("Invalid value for `direction`", call. = FALSE)
   }
 
-  mode(x) <- "numeric"
-  result <- .Call(proj_c_trans_matrix, as_proj(pj), x, direction, assert_lgl1(verbose))
+  mode(coord) <- "numeric"
+  result <- .Call(proj_c_trans_matrix, as_proj(pj), coord, direction, assert_lgl1(verbose))
   colnames(result) <- c("x", "y", "z", "t", "errno")
   result
 }
-
 
 #' Create coordinate matrices
 #'
