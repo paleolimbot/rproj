@@ -22,7 +22,7 @@ You can install the development version from [R
 Universe](https://r-universe.dev/) with:
 
 ``` r
-install.packages("libproj", repos = "https://paleolimbot.r-universe.dev")
+install.packages("rlibproj", repos = "https://paleolimbot.r-universe.dev")
 ```
 
 ## Example
