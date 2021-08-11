@@ -77,8 +77,8 @@ PJ_CONTEXT* rlibproj_ctx_from_xptr(SEXP ctx_xptr) {
 void rlibproj_ctx_stop_for_error(SEXP ctx_xptr) {
   // don't reset the error here!
   PJ_CONTEXT* ctx = (PJ_CONTEXT*) R_ExternalPtrAddr(ctx_xptr);
-  int errno = proj_context_errno(ctx);
-  const char* errstring = proj_context_errno_string(ctx, errno);
+  int err = proj_context_errno(ctx);
+  const char* errstring = proj_context_errno_string(ctx, err);
   const char* log_errstring = rlibproj_logger_error(ctx_xptr);
   if (log_errstring == NULL && errstring == NULL) {
     Rf_error("Unknown error");
