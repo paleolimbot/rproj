@@ -38,8 +38,8 @@ void rlibproj_pj_stop_for_error(SEXP pj_xptr) {
   SEXP ctx_xptr = R_ExternalPtrTag(pj_xptr);
   PJ_CONTEXT* ctx = (PJ_CONTEXT*) R_ExternalPtrAddr(ctx_xptr);
 
-  int errno = proj_errno(pj);
-  const char* errstring = proj_context_errno_string(ctx, errno);
+  int err = proj_errno(pj);
+  const char* errstring = proj_context_errno_string(ctx, err);
   const char* log_errstring = rlibproj_logger_error(ctx_xptr);
   if (log_errstring == NULL && errstring == NULL) {
     Rf_error("Unknown error");
