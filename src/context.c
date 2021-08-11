@@ -47,7 +47,8 @@ const char* rlibproj_logger_error(SEXP ctx_xptr) {
   if (VECTOR_ELT(logger, 0) == R_NilValue) {
     return NULL;
   } else {
-    return Rf_translateChar0(STRING_ELT(VECTOR_ELT(logger, 0), 0));
+    const char* msg = Rf_translateChar0(STRING_ELT(VECTOR_ELT(logger, 0), 0));
+    return msg;
   }
 }
 
