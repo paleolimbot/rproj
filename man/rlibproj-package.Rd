@@ -6,8 +6,7 @@
 \alias{rlibproj-package}
 \title{rlibproj: Generic Coordinate Transformation Library ('PROJ') R API}
 \description{
-Provides R bindings for the 'PROJ' coordinate transformation
-  library.
+Provides R bindings for the 'PROJ' coordinate transformation library.
 }
 \seealso{
 Useful links:
