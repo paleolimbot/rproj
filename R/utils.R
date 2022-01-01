@@ -33,7 +33,7 @@ assert_int1 <- function(x, arg_name = deparse(substitute(x))) {
 }
 
 assert_lgl1 <- function(x, arg_name = deparse(substitute(x))) {
-  if (!is.logical(x) || (length(x) != 1)) {
+  if (!is.logical(x) || (length(x) != 1) || identical(x, NA)) {
     stop(sprintf("`%s` must be logical of length 1", arg_name), call. = FALSE)
   }
 
