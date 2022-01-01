@@ -83,9 +83,9 @@ void rlibproj_ctx_stop_for_error(SEXP ctx_xptr) {
   if (log_errstring == NULL && errstring == NULL) {
     Rf_error("Unknown error");
   } else if (log_errstring == NULL) {
-    Rf_error(errstring);
+    Rf_error("%s", errstring);
   } else if (errstring == NULL) {
-    Rf_error(log_errstring);
+    Rf_error("%s", log_errstring);
   } else {
     Rf_error("%s\n%s", errstring, log_errstring);
   }
