@@ -34,3 +34,11 @@ test_that("proj_context_create() works", {
 
   expect_false(proj_context_is_network_enabled(ctx_default))
 })
+
+test_that("proj_context() getters work", {
+  expect_vector(proj_context_get_database_path(), character(), 1)
+  expect_vector(proj_context_get_use_proj4_init_rules(), logical(), 1)
+  expect_vector(proj_context_get_search_paths(), character())
+  expect_vector(proj_context_get_url_endpoint(), character(), 1)
+  expect_vector(proj_context_get_user_writable_directory(), character(), 1)
+})
