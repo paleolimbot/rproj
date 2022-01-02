@@ -49,11 +49,9 @@ with_proj_context <- function(ctx, expr) {
 #' @export
 proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_path = NULL,
                                 network_endpoint = NULL, network_enabled = NULL,
-                                log_level = NULL, ctx = NULL) {
-  if (is.null(ctx)) {
-    ctx <- .Call(proj_c_pj_default_ctx)
-    attr(ctx, "config") <- libproj::libproj_configuration()
-  }
+                                log_level = NULL, user_writable_directory = NULL,
+                                ctx = NULL) {
+  new_ctx <- .Call(proj_c_context_create)
 
   config <- list(
     search_path = search_path,
@@ -61,14 +59,31 @@ proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_pa
     ca_bundle_path = ca_bundle_path,
     network_endpoint = network_endpoint,
     network_enabled = network_enabled,
-    log_level = log_level
+    log_level = log_level,
+    user_writable_directory = user_writable_directory
   )
 
-  libproj_config <- libproj::libproj_configuration()
+  if (is.null(ctx)) {
+    parent_config <- libproj::libproj_configuration()
+  } else {
+    libproj_config_attr <- libproj::libproj_configuration()
+    parent_config_attr <- attr(ctx, "config", exact = TRUE)
+
+    parent_config <- list(
+      search_path = proj_context_get_search_paths(ctx),
+      db_path = proj_context_get_database_path(ctx),
+      ca_bundle_path = parent_config_attr$ca_bundle_path %||% libproj_config_attr$ca_bundle_path,
+      network_endpoint = parent_config_attr$network_endpoint %||% libproj_config_attr$network_endpoint,
+      network_enabled = proj_context_is_network_enabled(ctx),
+      log_level = parent_config_attr$log_level %||% libproj_config_attr$log_level,
+      user_writable_directory = proj_context_get_user_writable_directory(ctx)
+    )
+  }
+
   config <- config[!vapply(config, is.null, logical(1))]
-  config <- c(config, libproj_config)[names(libproj_config)]
-  new_ctx <- libproj::with_libproj_configuration(config, proj_context_clone(ctx))
-  proj_context_set_log_level(config$log_level, new_ctx)
+  config <- c(config, parent_config)[names(parent_config)]
+
+  do.call(libproj::libproj_configure, c(config, list(context = new_ctx)))
 
   # not all config values can be retrieved, so save them as an attribute
   attr(new_ctx, "config") <- config

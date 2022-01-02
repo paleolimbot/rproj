@@ -105,6 +105,26 @@ void proj_context_xptr_destroy(SEXP context_xptr) {
   }
 }
 
+SEXP proj_c_context_create() {
+  PJ_CONTEXT* ctx_clone = proj_context_create();
+  if (ctx_clone == NULL) {
+    Rf_error("Unknown error on proj_context_create()");
+  }
+
+  SEXP ctx_clone_xptr = PROTECT(R_MakeExternalPtr(ctx_clone, R_NilValue, R_NilValue));
+
+  SEXP logger = PROTECT(rlibproj_logger_create());
+  R_SetExternalPtrTag(ctx_clone_xptr, logger);
+  UNPROTECT(1);
+
+  proj_log_func(ctx_clone, logger, &rlibproj_logger_fun);
+
+  R_RegisterCFinalizer(ctx_clone_xptr, &proj_context_xptr_destroy);
+  Rf_setAttrib(ctx_clone_xptr, R_ClassSymbol, Rf_mkString("rlibproj_context"));
+  UNPROTECT(1);
+  return ctx_clone_xptr;
+}
+
 SEXP proj_c_context_clone(SEXP context_xptr) {
   // NULL is OK here so we just use the raw address without checking
   PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);

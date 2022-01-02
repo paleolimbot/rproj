@@ -28,6 +28,7 @@ proj_context_create(
   network_endpoint = NULL,
   network_enabled = NULL,
   log_level = NULL,
+  user_writable_directory = NULL,
   ctx = NULL
 )
 
@@ -74,6 +75,10 @@ This defaults to \code{FALSE}.}
 
 \item{log_level}{An integer describing the log level: 0 (none), 1 (error), 2 (debug),
 3 (trace), or 4 (tell)}
+
+\item{user_writable_directory}{A value to use for the user-writable directory.
+The implementation of the user-writable directory is experimental and might
+not actually result in the writable directory being updated.}
 }
 \value{
 An external pointer to a PROJ context.
