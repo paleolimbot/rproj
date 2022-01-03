@@ -79,5 +79,8 @@ wk_crs_proj_definition.rproj_proj <- function(crs, proj_version = NULL, verbose 
 #' @importFrom wk wk_crs_equal_generic
 #' @export
 wk_crs_equal_generic.rproj_proj <- function(x, y) {
-  proj_is_equivalent_to(as_proj(x), as_proj(y), criterion = "equivalent")
+  proj_is_equivalent_to(
+    sanitize_proj_crs(x), sanitize_proj_crs(y),
+    criterion = "equivalent"
+  )
 }

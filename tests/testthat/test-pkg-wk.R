@@ -39,3 +39,29 @@ test_that("wk_trans handles error transforms", {
     wk::xy(c(NA, NA), c(NA, NA))
   )
 })
+
+test_that("proj definition works", {
+  expect_identical(
+    wk::wk_crs_proj_definition(proj_create("EPSG:4326")),
+    "EPSG:4326"
+  )
+
+  expect_match(
+    wk::wk_crs_proj_definition(proj_create("+proj=merc +type=crs")),
+    "^PROJCRS"
+  )
+})
+
+test_that("crs equal implementation works", {
+  expect_true(wk::wk_crs_equal(proj_create("EPSG:4326"), 4326))
+  expect_true(wk::wk_crs_equal(4326, proj_create("EPSG:4326")))
+  expect_false(wk::wk_crs_equal(proj_create("EPSG:4326"), 32620))
+})
+
+test_that("crs equal implementation works for sf objects", {
+  skip_if_not_installed("sf")
+
+  expect_true(wk::wk_crs_equal(proj_create("EPSG:4326"), sf::st_crs(4326)))
+  expect_true(wk::wk_crs_equal(sf::st_crs(4326), proj_create("EPSG:4326")))
+  expect_false(wk::wk_crs_equal(proj_create("EPSG:4326"), sf::st_crs(32620)))
+})

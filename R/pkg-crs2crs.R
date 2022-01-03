@@ -45,8 +45,8 @@ crs_engine_proj_pipeline.rlibrpoj_crs2crs_engine <- function(engine, handleable,
     options <- c(options, paste0("ACCURACY=", assert_dbl1(accuracy)))
   }
 
-  crs_from <- crs_sanitize_proj_crs(crs_from)
-  crs_to <- crs_sanitize_proj_crs(crs_to)
+  crs_from <- sanitize_proj_crs(crs_from)
+  crs_to <- sanitize_proj_crs(crs_to)
   if (!identical(engine$spatial_test, "intersects")) {
     bbox <- NULL
   }
@@ -58,7 +58,7 @@ crs_engine_proj_pipeline.rlibrpoj_crs2crs_engine <- function(engine, handleable,
 #' @importFrom crs2crs crs_engine_proj_pipeline_apply
 #' @export
 crs_engine_proj_pipeline_apply.rlibrpoj_crs2crs_engine <- function(engine, handleable, pipeline, ...) {
-  trans <- as_wk_trans(crs_sanitize_proj_crs(pipeline))
+  trans <- as_wk_trans(sanitize_proj_crs(pipeline))
   wk::wk_transform(handleable, pipeline)
 }
 
@@ -68,12 +68,4 @@ crs_engine_proj_pipeline_apply.rlibrpoj_crs2crs_engine <- function(engine, handl
 crs_engine_get_wk_trans.rlibrpoj_crs2crs_engine <- function(engine, handleable, crs_to, crs_from, ...) {
   pipeline <- crs_engine_proj_pipeline(engine, handleable, crs_to, crs_from)
   as_wk_trans(pipeline)
-}
-
-crs_sanitize_proj_crs <- function(crs) {
-  if (inherits(crs, "rproj_proj")) {
-    crs
-  } else {
-    as_proj(wk::wk_crs_proj_definition(crs, verbose = TRUE))
-  }
 }

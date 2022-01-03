@@ -7,6 +7,14 @@ proj_xptr_addr <- function(x) {
   if (is.null(lhs)) rhs else lhs
 }
 
+sanitize_proj_crs <- function(crs) {
+  if (inherits(crs, "rproj_proj")) {
+    crs
+  } else {
+    as_proj(wk::wk_crs_proj_definition(crs))
+  }
+}
+
 assert_chr1 <- function(x, arg_name = deparse(substitute(x))) {
   if (!is.character(x) || (length(x) != 1)) {
     stop(sprintf("`%s` must be character of length 1", arg_name), call. = FALSE)
