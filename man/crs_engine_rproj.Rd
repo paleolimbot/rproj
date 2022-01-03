@@ -5,7 +5,6 @@
 \alias{crs_engine_proj_pipeline.rlibrpoj_crs2crs_engine}
 \alias{crs_engine_proj_pipeline_apply.rlibrpoj_crs2crs_engine}
 \alias{crs_engine_get_wk_trans.rlibrpoj_crs2crs_engine}
-\alias{crs_proj_definition.rproj_proj}
 \title{crs2crs transform engine}
 \usage{
 crs_engine_rproj(ctx = proj_context(), spatial_test = "intersects")
@@ -25,8 +24,6 @@ crs_engine_rproj(ctx = proj_context(), spatial_test = "intersects")
 \method{crs_engine_proj_pipeline_apply}{rlibrpoj_crs2crs_engine}(engine, handleable, pipeline, ...)
 
 \method{crs_engine_get_wk_trans}{rlibrpoj_crs2crs_engine}(engine, handleable, crs_to, crs_from, ...)
-
-\method{crs_proj_definition}{rproj_proj}(crs, proj_version = NULL)
 }
 \arguments{
 \item{ctx}{A \code{\link[=proj_context]{proj_context()}}}
@@ -55,11 +52,6 @@ transformations.}
 \item{...}{Unused}
 
 \item{pipeline}{A character vector representing a PROJ coordinate operation}
-
-\item{crs}{An arbitrary R object}
-
-\item{proj_version}{A \code{\link[=package_version]{package_version()}} of the PROJ version, or
-\code{NULL} if the PROJ version is unknown.}
 }
 \value{
 An engine that can be used with \code{\link[=crs_set_engine]{crs_set_engine()}}.

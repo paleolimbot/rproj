@@ -70,18 +70,10 @@ crs_engine_get_wk_trans.rlibrpoj_crs2crs_engine <- function(engine, handleable, 
   as_wk_trans(pipeline)
 }
 
-#' @rdname crs_engine_rproj
-#' @importFrom crs2crs crs_proj_definition
-#' @export
-crs_proj_definition.rproj_proj <- function(crs, proj_version = NULL) {
-  proj_make_compact_definition(crs)
-}
-
-
 crs_sanitize_proj_crs <- function(crs) {
   if (inherits(crs, "rproj_proj")) {
     crs
   } else {
-    as_proj(crs2crs::crs_proj_definition(crs))
+    as_proj(wk::wk_crs_proj_definition(crs, verbose = TRUE))
   }
 }

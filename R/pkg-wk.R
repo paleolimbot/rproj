@@ -66,3 +66,18 @@ print.rproj_trans_proj <- function(x, ...) {
   invisible(x)
 }
 
+#' @importFrom wk wk_crs_proj_definition
+#' @export
+wk_crs_proj_definition.rproj_proj <- function(crs, proj_version = NULL, verbose = FALSE) {
+  if (verbose) {
+    proj_as_wkt(crs)
+  } else {
+    proj_make_compact_definition(crs)
+  }
+}
+
+#' @importFrom wk wk_crs_equal_generic
+#' @export
+wk_crs_equal_generic.rproj_proj <- function(x, y) {
+  proj_is_equivalent_to(as_proj(x), as_proj(y), criterion = "equivalent")
+}

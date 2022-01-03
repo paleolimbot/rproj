@@ -19,8 +19,8 @@ BugReports: https://github.com/paleolimbot/rproj/issues
 Imports: 
     crs2crs,
     jsonlite,
-    libproj (>= 8.1.0),
-    wk (>= 0.5.0)
+    libproj (>= 8.2.0),
+    wk (>= 0.5.0.9000)
 LinkingTo: 
     wk,
     libproj
@@ -30,5 +30,6 @@ Suggests:
     testthat (>= 3.0.0)
 Remotes:
     paleolimbot/libproj,
-    paleolimbot/crs2crs
+    paleolimbot/crs2crs,
+    paleolimbot/wk
 Config/testthat/edition: 3
