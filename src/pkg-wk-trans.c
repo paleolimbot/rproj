@@ -39,7 +39,7 @@ void rproj_trans_proj_finalize(void* trans_data) {
   free(trans_data);
 }
 
-SEXP proj_c_trans(SEXP pj_xptr, SEXP use_z_sexp, SEXP use_m_sexp, SEXP direction_sexp) {
+SEXP rproj_c_trans(SEXP pj_xptr, SEXP use_z_sexp, SEXP use_m_sexp, SEXP direction_sexp) {
   // prepare data for C struct / validate args
   // we need the source and dest z/m info to invert properly
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
@@ -73,7 +73,7 @@ SEXP proj_c_trans(SEXP pj_xptr, SEXP use_z_sexp, SEXP use_m_sexp, SEXP direction
   return wk_trans_create_xptr(trans, pj_xptr, R_NilValue);
 }
 
-SEXP proj_c_trans_inverse(SEXP trans_xptr) {
+SEXP rproj_c_trans_inverse(SEXP trans_xptr) {
   // very important that this is a trans pointing to this type of trans
   if (!Rf_inherits(trans_xptr, "rproj_trans_proj")) {
     Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
@@ -116,7 +116,7 @@ SEXP proj_c_trans_inverse(SEXP trans_xptr) {
   return wk_trans_create_xptr(trans, R_ExternalPtrTag(trans_xptr), R_NilValue);
 }
 
-SEXP proj_c_trans_get_pj(SEXP trans_xptr) {
+SEXP rproj_c_trans_get_pj(SEXP trans_xptr) {
   if (!Rf_inherits(trans_xptr, "rproj_trans_proj")) {
     Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
   }
@@ -124,7 +124,7 @@ SEXP proj_c_trans_get_pj(SEXP trans_xptr) {
   return R_ExternalPtrTag(trans_xptr);
 }
 
-SEXP proj_c_trans_get_direction(SEXP trans_xptr) {
+SEXP rproj_c_trans_get_direction(SEXP trans_xptr) {
   if (!Rf_inherits(trans_xptr, "rproj_trans_proj")) {
     Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
   }

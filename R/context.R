@@ -51,7 +51,7 @@ proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_pa
                                 network_endpoint = NULL, network_enabled = NULL,
                                 log_level = NULL, user_writable_directory = NULL,
                                 ctx = NULL) {
-  new_ctx <- .Call(proj_c_context_create)
+  new_ctx <- .Call(rproj_c_context_create)
 
   config <- list(
     search_path = search_path,
@@ -94,7 +94,7 @@ proj_context_create <- function(search_path = NULL, db_path = NULL, ca_bundle_pa
 #' @rdname proj_context
 #' @export
 proj_context_clone <- function(ctx = proj_context()) {
-  new_ctx <- .Call(proj_c_context_clone, ctx)
+  new_ctx <- .Call(rproj_c_context_clone, ctx)
 
   # apparently the log level doesn't survive the clone operation
   if (!is.null(attr(ctx, "config"))) {
@@ -111,7 +111,7 @@ proj_context_clone <- function(ctx = proj_context()) {
 proj_context_set_log_level <- function(log_level = 1L, ctx = proj_context()) {
   log_level <- assert_int1(log_level)
   stopifnot(log_level >= 0, log_level <= 4)
-  result <- .Call(proj_c_context_set_log_level, ctx, log_level)
+  result <- .Call(rproj_c_context_set_log_level, ctx, log_level)
   if (!is.null(attr(ctx, "config"))) {
     attr(ctx, "config")$log_level <- log_level
   }
@@ -121,25 +121,25 @@ proj_context_set_log_level <- function(log_level = 1L, ctx = proj_context()) {
 #' @rdname proj_context
 #' @export
 proj_context_is_network_enabled <- function(ctx = proj_context()) {
-  .Call(proj_c_context_is_network_enabled, ctx)
+  .Call(rproj_c_context_is_network_enabled, ctx)
 }
 
 #' @rdname proj_context
 #' @export
 proj_context_get_url_endpoint <- function(ctx = proj_context()) {
-  .Call(proj_c_context_get_url_endpoint, ctx)
+  .Call(rproj_c_context_get_url_endpoint, ctx)
 }
 
 #' @rdname proj_context
 #' @export
 proj_context_get_use_proj4_init_rules <- function(ctx = proj_context()) {
-  .Call(proj_c_context_get_use_proj4_init_rules, ctx)
+  .Call(rproj_c_context_get_use_proj4_init_rules, ctx)
 }
 
 #' @rdname proj_context
 #' @export
 proj_context_get_user_writable_directory <- function(ctx = proj_context()) {
-  .Call(proj_c_context_get_user_writable_directory, ctx)
+  .Call(rproj_c_context_get_user_writable_directory, ctx)
 }
 
 #' @rdname proj_context
@@ -151,7 +151,7 @@ proj_context_get_search_paths <- function(ctx = proj_context()) {
 #' @rdname proj_context
 #' @export
 proj_context_get_database_path <- function(ctx = proj_context()) {
-  .Call(proj_c_context_get_database_path, ctx)
+  .Call(rproj_c_context_get_database_path, ctx)
 }
 
 #' @export

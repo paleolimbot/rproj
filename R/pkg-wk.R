@@ -33,7 +33,7 @@ as_wk_trans.rproj_proj <- function(x, ..., use_z = NA, use_m = NA, verbose = FAL
   }
 
   wk::new_wk_trans(
-    .Call(proj_c_trans, x, use_z, use_m, proj_direction_code("FWD")),
+    .Call(rproj_c_trans, x, use_z, use_m, proj_direction_code("FWD")),
     "rproj_trans_proj"
   )
 }
@@ -43,15 +43,15 @@ as_wk_trans.rproj_proj <- function(x, ..., use_z = NA, use_m = NA, verbose = FAL
 #' @export
 wk_trans_inverse.rproj_trans_proj <- function(trans) {
   wk::new_wk_trans(
-    .Call(proj_c_trans_inverse, trans),
+    .Call(rproj_c_trans_inverse, trans),
     "rproj_trans_proj"
   )
 }
 
 #' @export
 print.rproj_trans_proj <- function(x, ...) {
-  pj <- .Call(proj_c_trans_get_pj, x)
-  direction <- .Call(proj_c_trans_get_direction, x)
+  pj <- .Call(rproj_c_trans_get_pj, x)
+  direction <- .Call(rproj_c_trans_get_direction, x)
 
   cat(
     sprintf(

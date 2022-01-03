@@ -5,14 +5,14 @@ src_sources <- src_files %>% set_names() %>% map_chr(readr::read_file)
 
 defs <- tibble(
   def = src_sources %>%
-    str_extract_all(regex("SEXP proj_c_[^\\)]+\\)\\s+", multiline = TRUE)) %>%
+    str_extract_all(regex("SEXP rproj_c_[^\\)]+\\)\\s+", multiline = TRUE)) %>%
     unlist() %>%
     str_replace_all("\\s+", " ") %>%
     str_trim(),
-  name = def %>% str_extract("proj_c_[^\\(]+"),
+  name = def %>% str_extract("rproj_c_[^\\(]+"),
   return_type = "SEXP",
   args = def %>%
-    str_remove("SEXP proj_c_[^\\(]+\\(") %>%
+    str_remove("SEXP rproj_c_[^\\(]+\\(") %>%
     str_remove("\\)$") %>%
     str_split("\\s*,\\s*") %>%
     map(~{if(identical(.x, "")) character(0) else .x}),

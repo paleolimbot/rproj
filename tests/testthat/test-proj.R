@@ -61,7 +61,7 @@ test_that("proj_create_from_wkt() works", {
 
   # bad options
   expect_error(
-    .Call(proj_c_create_from_wkt, proj_context(), "invalid", "NOT_AN_OPTION=NOPE"),
+    .Call(rproj_c_create_from_wkt, proj_context(), "invalid", "NOT_AN_OPTION=NOPE"),
     "Unknown option"
   )
 })

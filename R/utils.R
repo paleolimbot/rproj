@@ -1,6 +1,6 @@
 
 proj_xptr_addr <- function(x) {
-  .Call(proj_c_xptr_addr, x)
+  .Call(rproj_c_xptr_addr, x)
 }
 
 `%||%` <- function(lhs, rhs) {

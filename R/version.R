@@ -16,6 +16,6 @@
 #' proj_version() >= "8.1.0"
 #'
 proj_version <- function(runtime = TRUE) {
-  version <- if (runtime) libproj::libproj_version() else .Call(proj_c_version_build)
+  version <- if (runtime) libproj::libproj_version() else .Call(rproj_c_version_build)
   package_version(version)
 }

@@ -55,7 +55,7 @@ const char* rproj_type(int type) {
   }
 }
 
-SEXP proj_c_type_name(SEXP type_sexp) {
+SEXP rproj_c_type_name(SEXP type_sexp) {
   return rproj_enum_name(type_sexp, &rproj_type);
 }
 
@@ -69,7 +69,7 @@ const char* rproj_comp(int comparison_criterion) {
   }
 }
 
-SEXP proj_c_comp_name(SEXP comp_sexp) {
+SEXP rproj_c_comp_name(SEXP comp_sexp) {
   return rproj_enum_name(comp_sexp, &rproj_comp);
 }
 
@@ -85,7 +85,7 @@ const char* rproj_wkt_type(int wkt_type) {
   }
 }
 
-SEXP proj_c_wkt_type(SEXP wkt_type_sexp) {
+SEXP rproj_c_wkt_type(SEXP wkt_type_sexp) {
   return rproj_enum_name(wkt_type_sexp, &rproj_wkt_type);
 }
 
@@ -97,7 +97,7 @@ const char* rproj_proj_string_type(int code) {
   }
 }
 
-SEXP proj_c_proj_string_type(SEXP code_sexp) {
+SEXP rproj_c_proj_string_type(SEXP code_sexp) {
   return rproj_enum_name(code_sexp, &rproj_proj_string_type);
 }
 
@@ -110,6 +110,6 @@ const char* rproj_direction(int code) {
   }
 }
 
-SEXP proj_c_direction_name(SEXP code_sexp) {
+SEXP rproj_c_direction_name(SEXP code_sexp) {
   return rproj_enum_name(code_sexp, &rproj_direction);
 }

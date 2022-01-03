@@ -24,19 +24,19 @@
 #'
 #' @export
 proj_create <- function(definition, ctx = proj_context()) {
-  .Call(proj_c_create, ctx, assert_chr1(definition))
+  .Call(rproj_c_create, ctx, assert_chr1(definition))
 }
 
 #' @rdname proj_create
 #' @export
 proj_clone <- function(pj, ctx = proj_context()) {
-  .Call(proj_c_clone, as_proj(pj), ctx)
+  .Call(rproj_c_clone, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create
 #' @export
 proj_get_context <- function(pj) {
-  .Call(proj_c_get_context, pj)
+  .Call(rproj_c_get_context, pj)
 }
 
 #' @rdname proj_create
@@ -50,7 +50,7 @@ proj_create_crs_to_crs <- function(source_crs, target_crs, area = NULL,
   options <- as.character(options[!is.na(options)])
 
   .Call(
-    proj_c_create_crs_to_crs,
+    rproj_c_create_crs_to_crs,
     ctx,
     as_proj(source_crs, ctx = ctx),
     as_proj(target_crs, ctx = ctx),
@@ -63,7 +63,7 @@ proj_create_crs_to_crs <- function(source_crs, target_crs, area = NULL,
 #' @export
 proj_create_from_wkt <- function(wkt, options = character(), ctx = proj_context()) {
   options <- as.character(options[!is.na(options)])
-  raw <- .Call(proj_c_create_from_wkt, ctx, assert_chr1(wkt, "wkt"), options)
+  raw <- .Call(rproj_c_create_from_wkt, ctx, assert_chr1(wkt, "wkt"), options)
 
   # a few options depending on whether or not there were any warnings, errors
   # or whether or not a PJ* was constructed
@@ -92,13 +92,13 @@ proj_create_from_wkt <- function(wkt, options = character(), ctx = proj_context(
 #' @rdname proj_create
 #' @export
 proj_get_source_crs <- function(pj, ctx = proj_context()) {
-  .Call(proj_c_get_source_crs, as_proj(pj), ctx)
+  .Call(rproj_c_get_source_crs, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create
 #' @export
 proj_get_target_crs <- function(pj, ctx = proj_context()) {
-  .Call(proj_c_get_target_crs, as_proj(pj), ctx)
+  .Call(rproj_c_get_target_crs, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create
@@ -113,7 +113,7 @@ proj_identify <- function(pj, auth_name = NULL, ctx = proj_context()) {
   results <- lapply(
     auth_name,
     function(auth) .Call(
-      proj_c_identify,
+      rproj_c_identify,
       as_proj(pj),
       auth,
       ctx
@@ -131,13 +131,13 @@ proj_identify <- function(pj, auth_name = NULL, ctx = proj_context()) {
 #' @rdname proj_create
 #' @export
 proj_get_non_deprecated <- function(pj, ctx = proj_context()) {
-  .Call(proj_c_get_non_deprecated, as_proj(pj), ctx)
+  .Call(rproj_c_get_non_deprecated, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create
 #' @export
 proj_normalize_for_visualization <- function(pj, ctx = proj_context()) {
-  .Call(proj_c_normalize_for_visualization, as_proj(pj), ctx)
+  .Call(rproj_c_normalize_for_visualization, as_proj(pj), ctx)
 }
 
 #' @rdname proj_create
@@ -176,19 +176,19 @@ as_proj.character <- function(x, ..., ctx = proj_context()) {
 #' @export
 #'
 proj_info <- function(pj) {
-  new_data_frame(.Call(proj_c_proj_info, as_proj(pj)))
+  new_data_frame(.Call(rproj_c_proj_info, as_proj(pj)))
 }
 
 #' @rdname proj_info
 #' @export
 proj_get_type <- function(pj) {
-  proj_type_name(.Call(proj_c_get_type, as_proj(pj)))
+  proj_type_name(.Call(rproj_c_get_type, as_proj(pj)))
 }
 
 #' @rdname proj_info
 #' @export
 proj_is_deprecated <- function(pj) {
-  .Call(proj_c_is_deprecated, as_proj(pj))
+  .Call(rproj_c_is_deprecated, as_proj(pj))
 }
 
 #' @rdname proj_info
@@ -204,7 +204,7 @@ proj_is_equivalent_to <- function(pj, other, criterion = NULL, ctx = proj_contex
   }
 
   .Call(
-    proj_c_is_equivalent_to,
+    rproj_c_is_equivalent_to,
     as_proj(pj),
     as_proj(other),
     criterion,
@@ -215,25 +215,25 @@ proj_is_equivalent_to <- function(pj, other, criterion = NULL, ctx = proj_contex
 #' @rdname proj_info
 #' @export
 proj_is_crs <- function(pj) {
-  .Call(proj_c_is_crs, as_proj(pj))
+  .Call(rproj_c_is_crs, as_proj(pj))
 }
 
 #' @rdname proj_info
 #' @export
 proj_get_remarks <- function(pj) {
-  .Call(proj_c_get_remarks, as_proj(pj))
+  .Call(rproj_c_get_remarks, as_proj(pj))
 }
 
 #' @rdname proj_info
 #' @export
 proj_get_scope <- function(pj) {
-  .Call(proj_c_get_scope, as_proj(pj))
+  .Call(rproj_c_get_scope, as_proj(pj))
 }
 
 #' @rdname proj_info
 #' @export
 proj_get_area_of_use <- function(pj) {
-  raw <- .Call(proj_c_get_area_of_use, as_proj(pj))
+  raw <- .Call(rproj_c_get_area_of_use, as_proj(pj))
   new_data_frame(
     list(
       name = raw[[2]],
@@ -259,7 +259,7 @@ proj_as_wkt <- function(pj, wkt_type = NULL, options = character(),
     stop("Invalid value for `wkt_type`", call. = FALSE)
   }
 
-  .Call(proj_c_as_wkt, as_proj(pj), wkt_type, options, ctx)
+  .Call(rproj_c_as_wkt, as_proj(pj), wkt_type, options, ctx)
 }
 
 #' @rdname proj_info
@@ -276,14 +276,14 @@ proj_as_proj_string <- function(pj, proj_string_type = NULL, options = NULL,
     stop("Invalid value for `proj_string_type`", call. = FALSE)
   }
 
-  .Call(proj_c_as_proj_string, as_proj(pj), proj_string_type, options, ctx)
+  .Call(rproj_c_as_proj_string, as_proj(pj), proj_string_type, options, ctx)
 }
 
 #' @rdname proj_info
 #' @export
 proj_as_projjson <- function(pj, options = NULL, ctx = proj_context()) {
   options <- as.character(options[!is.na(options)])
-  .Call(proj_c_as_projjson, as_proj(pj), options, ctx)
+  .Call(rproj_c_as_projjson, as_proj(pj), options, ctx)
 }
 
 #' @rdname proj_info

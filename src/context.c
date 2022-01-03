@@ -91,7 +91,7 @@ void rproj_ctx_stop_for_error(SEXP ctx_xptr) {
   }
 }
 
-SEXP proj_c_pj_default_ctx() {
+SEXP rproj_c_pj_default_ctx() {
   SEXP context_xptr = PROTECT(R_MakeExternalPtr(PJ_DEFAULT_CTX, R_NilValue, R_NilValue));
   Rf_setAttrib(context_xptr, R_ClassSymbol, Rf_mkString("rproj_context"));
   UNPROTECT(1);
@@ -105,7 +105,7 @@ void proj_context_xptr_destroy(SEXP context_xptr) {
   }
 }
 
-SEXP proj_c_context_create() {
+SEXP rproj_c_context_create() {
   PJ_CONTEXT* ctx_clone = proj_context_create();
   if (ctx_clone == NULL) {
     Rf_error("Unknown error on proj_context_create()");
@@ -125,7 +125,7 @@ SEXP proj_c_context_create() {
   return ctx_clone_xptr;
 }
 
-SEXP proj_c_context_clone(SEXP context_xptr) {
+SEXP rproj_c_context_clone(SEXP context_xptr) {
   // NULL is OK here so we just use the raw address without checking
   PJ_CONTEXT* context = (PJ_CONTEXT*) R_ExternalPtrAddr(context_xptr);
 
@@ -148,20 +148,20 @@ SEXP proj_c_context_clone(SEXP context_xptr) {
   return ctx_clone_xptr;
 }
 
-SEXP proj_c_context_set_log_level(SEXP context_xptr, SEXP log_level_sexp) {
+SEXP rproj_c_context_set_log_level(SEXP context_xptr, SEXP log_level_sexp) {
   PJ_CONTEXT* context = rproj_ctx_from_xptr(context_xptr);
   int log_level = INTEGER(log_level_sexp)[0];
   int result = proj_log_level(context, log_level);
   return Rf_ScalarInteger(result);
 }
 
-SEXP proj_c_context_is_network_enabled(SEXP context_xptr) {
+SEXP rproj_c_context_is_network_enabled(SEXP context_xptr) {
   PJ_CONTEXT* context = rproj_ctx_from_xptr(context_xptr);
   int value = proj_context_is_network_enabled(context);
   return Rf_ScalarLogical(value);
 }
 
-SEXP proj_c_context_get_url_endpoint(SEXP context_xptr) {
+SEXP rproj_c_context_get_url_endpoint(SEXP context_xptr) {
   PJ_CONTEXT* context = rproj_ctx_from_xptr(context_xptr);
   const char* value = proj_context_get_url_endpoint(context);
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
@@ -170,7 +170,7 @@ SEXP proj_c_context_get_url_endpoint(SEXP context_xptr) {
   return out;
 }
 
-SEXP proj_c_context_get_user_writable_directory(SEXP context_xptr) {
+SEXP rproj_c_context_get_user_writable_directory(SEXP context_xptr) {
   PJ_CONTEXT* context = rproj_ctx_from_xptr(context_xptr);
   const char* value = proj_context_get_user_writable_directory(context, 0);
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
@@ -179,13 +179,13 @@ SEXP proj_c_context_get_user_writable_directory(SEXP context_xptr) {
   return out;
 }
 
-SEXP proj_c_context_get_use_proj4_init_rules(SEXP context_xptr) {
+SEXP rproj_c_context_get_use_proj4_init_rules(SEXP context_xptr) {
   PJ_CONTEXT* context = rproj_ctx_from_xptr(context_xptr);
   int value = proj_context_get_use_proj4_init_rules(context, 0);
   return Rf_ScalarLogical(value);
 }
 
-SEXP proj_c_context_get_database_path(SEXP context_xptr) {
+SEXP rproj_c_context_get_database_path(SEXP context_xptr) {
   PJ_CONTEXT* context = rproj_ctx_from_xptr(context_xptr);
   const char* value = proj_context_get_database_path(context);
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));

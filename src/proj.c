@@ -60,7 +60,7 @@ void proj_xptr_destroy(SEXP proj_xptr) {
   }
 }
 
-SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp) {
+SEXP rproj_c_create(SEXP ctx_xptr, SEXP definition_sexp) {
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
   const char* definition = Rf_translateCharUTF8(STRING_ELT(definition_sexp, 0));
 
@@ -76,7 +76,7 @@ SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp) {
   return pj_xptr;
 }
 
-SEXP proj_c_clone(SEXP pj_xptr, SEXP ctx_xptr) {
+SEXP rproj_c_clone(SEXP pj_xptr, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
@@ -92,12 +92,12 @@ SEXP proj_c_clone(SEXP pj_xptr, SEXP ctx_xptr) {
   return new_pj_xptr;
 }
 
-SEXP proj_c_get_context(SEXP pj_xptr) {
+SEXP rproj_c_get_context(SEXP pj_xptr) {
   rproj_pj_from_xptr(pj_xptr);
   return R_ExternalPtrTag(pj_xptr);
 }
 
-SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr,
+SEXP rproj_c_create_crs_to_crs(SEXP ctx_xptr,
                               SEXP source_crs_xptr, SEXP target_crs_xptr,
                               SEXP area_sexp, SEXP options_sexp) {
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
@@ -136,7 +136,7 @@ SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr,
   return pj_xptr;
 }
 
-SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp) {
+SEXP rproj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp) {
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
   const char* wkt = Rf_translateCharUTF8(STRING_ELT(wkt_sexp, 0));
 
@@ -200,7 +200,7 @@ SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp) {
   return out;
 }
 
-SEXP proj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr) {
+SEXP rproj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
@@ -219,7 +219,7 @@ SEXP proj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr) {
   return source_crs_xptr;
 }
 
-SEXP proj_c_normalize_for_visualization(SEXP pj_xptr, SEXP ctx_xptr) {
+SEXP rproj_c_normalize_for_visualization(SEXP pj_xptr, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
@@ -235,7 +235,7 @@ SEXP proj_c_normalize_for_visualization(SEXP pj_xptr, SEXP ctx_xptr) {
   return pj_out_xptr;
 }
 
-SEXP proj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr) {
+SEXP rproj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
   PJ* target_crs = proj_get_target_crs(ctx, pj);
@@ -251,7 +251,7 @@ SEXP proj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr) {
   return target_crs_xptr;
 }
 
-SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
+SEXP rproj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
@@ -277,7 +277,7 @@ SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
   return out;
 }
 
-SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr) {
+SEXP rproj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
@@ -314,7 +314,7 @@ SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr) {
   return container;
 }
 
-SEXP proj_c_proj_info(SEXP pj_xptr) {
+SEXP rproj_c_proj_info(SEXP pj_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_PROJ_INFO info = proj_pj_info(pj);
 
@@ -343,22 +343,22 @@ SEXP proj_c_proj_info(SEXP pj_xptr) {
   return out;
 }
 
-SEXP proj_c_get_type(SEXP pj_xptr) {
+SEXP rproj_c_get_type(SEXP pj_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   return Rf_ScalarInteger(proj_get_type(pj));
 }
 
-SEXP proj_c_is_deprecated(SEXP pj_xptr) {
+SEXP rproj_c_is_deprecated(SEXP pj_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   return Rf_ScalarLogical(proj_is_deprecated(pj));
 }
 
-SEXP proj_c_is_crs(SEXP pj_xptr) {
+SEXP rproj_c_is_crs(SEXP pj_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   return Rf_ScalarLogical(proj_is_crs(pj));
 }
 
-SEXP proj_c_is_equivalent_to(SEXP pj_xptr, SEXP other_xptr,
+SEXP rproj_c_is_equivalent_to(SEXP pj_xptr, SEXP other_xptr,
                              SEXP criterion_sexp, SEXP ctx_xptr) {
 
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
@@ -370,7 +370,7 @@ SEXP proj_c_is_equivalent_to(SEXP pj_xptr, SEXP other_xptr,
   return Rf_ScalarLogical(result);
 }
 
-SEXP proj_c_get_remarks(SEXP pj_xptr) {
+SEXP rproj_c_get_remarks(SEXP pj_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   const char* remarks = proj_get_remarks(pj);
   if (remarks == NULL) {
@@ -383,7 +383,7 @@ SEXP proj_c_get_remarks(SEXP pj_xptr) {
   return out;
 }
 
-SEXP proj_c_get_scope(SEXP pj_xptr) {
+SEXP rproj_c_get_scope(SEXP pj_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   const char* scope = proj_get_scope(pj);
   if (scope == NULL) {
@@ -396,7 +396,7 @@ SEXP proj_c_get_scope(SEXP pj_xptr) {
   return out;
 }
 
-SEXP proj_c_get_area_of_use(SEXP pj_xptr) {
+SEXP rproj_c_get_area_of_use(SEXP pj_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
 
@@ -429,7 +429,7 @@ SEXP proj_c_get_area_of_use(SEXP pj_xptr) {
   return out;
 }
 
-SEXP proj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx_xptr) {
+SEXP rproj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
   int wkt_type = INTEGER(wkt_type_sexp)[0];
@@ -452,7 +452,7 @@ SEXP proj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx
   return out;
 }
 
-SEXP proj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP options_sexp, SEXP ctx_xptr) {
+SEXP rproj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP options_sexp, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
   int proj_string_type = INTEGER(proj_string_type_sexp)[0];
@@ -475,7 +475,7 @@ SEXP proj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP option
   return out;
 }
 
-SEXP proj_c_as_projjson(SEXP pj_xptr,  SEXP options_sexp, SEXP ctx_xptr) {
+SEXP rproj_c_as_projjson(SEXP pj_xptr,  SEXP options_sexp, SEXP ctx_xptr) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
 

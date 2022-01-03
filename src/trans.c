@@ -8,7 +8,7 @@
 #include "rproj-proj.h"
 
 
-SEXP proj_c_trans_matrix(SEXP pj_xptr, SEXP x_sexp, SEXP direction_sexp,
+SEXP rproj_c_trans_matrix(SEXP pj_xptr, SEXP x_sexp, SEXP direction_sexp,
                          SEXP verbose_sexp) {
   PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);

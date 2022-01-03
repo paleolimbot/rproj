@@ -25,7 +25,7 @@ proj_trans <- function(pj, coord, direction = "fwd", verbose = FALSE) {
   }
 
   mode(coord) <- "numeric"
-  result <- .Call(proj_c_trans_matrix, as_proj(pj), coord, direction, assert_lgl1(verbose))
+  result <- .Call(rproj_c_trans_matrix, as_proj(pj), coord, direction, assert_lgl1(verbose))
   colnames(result) <- c("x", "y", "z", "t", "errno")
   result
 }
