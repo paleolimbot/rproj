@@ -8,7 +8,7 @@
   proj_context_env$ctx <- try(proj_context_create())
 
   # regsiter methods
-  s3_register("sf::st_crs", "rlibproj_proj")
+  s3_register("sf::st_crs", "rproj_proj")
 }
 
 s3_register <- function(generic, class, method = NULL) {

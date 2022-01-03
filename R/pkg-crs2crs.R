@@ -16,11 +16,11 @@
 #' @return An engine that can be used with [crs_set_engine()].
 #' @export
 #'
-crs_engine_rlibproj <- function(ctx = proj_context(), spatial_test = "intersects") {
+crs_engine_rproj <- function(ctx = proj_context(), spatial_test = "intersects") {
   structure(list(ctx = ctx), class = "rlibrpoj_crs2crs_engine")
 }
 
-#' @rdname crs_engine_rlibproj
+#' @rdname crs_engine_rproj
 #' @importFrom crs2crs crs_engine_proj_pipeline
 #' @export
 crs_engine_proj_pipeline.rlibrpoj_crs2crs_engine <- function(engine, handleable, crs_to,
@@ -54,7 +54,7 @@ crs_engine_proj_pipeline.rlibrpoj_crs2crs_engine <- function(engine, handleable,
   proj_create_crs_to_crs(crs_from, crs_to, options = options)
 }
 
-#' @rdname crs_engine_rlibproj
+#' @rdname crs_engine_rproj
 #' @importFrom crs2crs crs_engine_proj_pipeline_apply
 #' @export
 crs_engine_proj_pipeline_apply.rlibrpoj_crs2crs_engine <- function(engine, handleable, pipeline, ...) {
@@ -62,7 +62,7 @@ crs_engine_proj_pipeline_apply.rlibrpoj_crs2crs_engine <- function(engine, handl
   wk::wk_transform(handleable, pipeline)
 }
 
-#' @rdname crs_engine_rlibproj
+#' @rdname crs_engine_rproj
 #' @importFrom crs2crs crs_engine_get_wk_trans
 #' @export
 crs_engine_get_wk_trans.rlibrpoj_crs2crs_engine <- function(engine, handleable, crs_to, crs_from, ...) {
@@ -70,16 +70,16 @@ crs_engine_get_wk_trans.rlibrpoj_crs2crs_engine <- function(engine, handleable, 
   as_wk_trans(pipeline)
 }
 
-#' @rdname crs_engine_rlibproj
+#' @rdname crs_engine_rproj
 #' @importFrom crs2crs crs_proj_definition
 #' @export
-crs_proj_definition.rlibproj_proj <- function(crs, proj_version = NULL) {
+crs_proj_definition.rproj_proj <- function(crs, proj_version = NULL) {
   proj_make_compact_definition(crs)
 }
 
 
 crs_sanitize_proj_crs <- function(crs) {
-  if (inherits(crs, "rlibproj_proj")) {
+  if (inherits(crs, "rproj_proj")) {
     crs
   } else {
     as_proj(crs2crs::crs_proj_definition(crs))

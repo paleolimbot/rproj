@@ -155,12 +155,12 @@ proj_context_get_database_path <- function(ctx = proj_context()) {
 }
 
 #' @export
-format.rlibproj_context <- function(x, ...) {
+format.rproj_context <- function(x, ...) {
   sprintf("<proj_context at %s>", proj_xptr_addr(x))
 }
 
 #' @export
-print.rlibproj_context <- function(x, ...) {
+print.rproj_context <- function(x, ...) {
   cat(sprintf("<proj_context at %s>\n", proj_xptr_addr(x)))
   cat(sprintf("* db: <%s>\n", proj_context_get_database_path(x)))
 

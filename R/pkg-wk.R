@@ -16,7 +16,7 @@
 #' @importFrom wk as_wk_trans
 #' @export
 #'
-as_wk_trans.rlibproj_proj <- function(x, ..., use_z = NA, use_m = NA, verbose = FALSE) {
+as_wk_trans.rproj_proj <- function(x, ..., use_z = NA, use_m = NA, verbose = FALSE) {
   # uses NA as the reverse if unspecified which is probably
   # better than dropping it by default
   use_z <- as.logical(use_z)[1:2]
@@ -34,22 +34,22 @@ as_wk_trans.rlibproj_proj <- function(x, ..., use_z = NA, use_m = NA, verbose = 
 
   wk::new_wk_trans(
     .Call(proj_c_trans, x, use_z, use_m, proj_direction_code("FWD")),
-    "rlibproj_trans_proj"
+    "rproj_trans_proj"
   )
 }
 
-#' @rdname as_wk_trans.rlibproj_proj
+#' @rdname as_wk_trans.rproj_proj
 #' @importFrom wk wk_trans_inverse
 #' @export
-wk_trans_inverse.rlibproj_trans_proj <- function(trans) {
+wk_trans_inverse.rproj_trans_proj <- function(trans) {
   wk::new_wk_trans(
     .Call(proj_c_trans_inverse, trans),
-    "rlibproj_trans_proj"
+    "rproj_trans_proj"
   )
 }
 
 #' @export
-print.rlibproj_trans_proj <- function(x, ...) {
+print.rproj_trans_proj <- function(x, ...) {
   pj <- .Call(proj_c_trans_get_pj, x)
   direction <- .Call(proj_c_trans_get_direction, x)
 

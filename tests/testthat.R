@@ -1,4 +1,4 @@
 library(testthat)
-library(rlibproj)
+library(rproj)
 
-test_check("rlibproj")
+test_check("rproj")

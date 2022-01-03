@@ -12,7 +12,7 @@
 \alias{proj_get_non_deprecated}
 \alias{proj_normalize_for_visualization}
 \alias{as_proj}
-\alias{as_proj.rlibproj_proj}
+\alias{as_proj.rproj_proj}
 \alias{as_proj.character}
 \title{Create PROJ objects}
 \usage{
@@ -44,7 +44,7 @@ proj_normalize_for_visualization(pj, ctx = proj_context())
 
 as_proj(x, ..., ctx = proj_context())
 
-\method{as_proj}{rlibproj_proj}(x, ..., ctx = proj_context())
+\method{as_proj}{rproj_proj}(x, ..., ctx = proj_context())
 
 \method{as_proj}{character}(x, ..., ctx = proj_context())
 }

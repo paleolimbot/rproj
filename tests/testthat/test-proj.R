@@ -1,6 +1,6 @@
 
 test_that("proj_create() works", {
-  expect_s3_class(proj_create("+proj=noop"), "rlibproj_proj")
+  expect_s3_class(proj_create("+proj=noop"), "rproj_proj")
   expect_error(proj_create("+proj=not_a_proj"), "Unknown projection")
 })
 
@@ -38,7 +38,7 @@ test_that("proj_create_from_wkt() works", {
   )
 
   pj <- expect_silent(proj_create_from_wkt(wkt_good))
-  expect_s3_class(pj, "rlibproj_proj")
+  expect_s3_class(pj, "rproj_proj")
   expect_error(proj_create_from_wkt("invalid"), "reported error")
 
   # from https://github.com/OSGeo/PROJ/blob/master/test/unit/test_c_api.cpp#L316
@@ -55,7 +55,7 @@ test_that("proj_create_from_wkt() works", {
   )
 
   expect_warning(
-    expect_s3_class(proj_create_from_wkt(wkt_warn), "rlibproj_proj"),
+    expect_s3_class(proj_create_from_wkt(wkt_warn), "rproj_proj"),
     "reported warning"
   )
 
@@ -200,8 +200,8 @@ test_that("short definition generator works", {
 test_that("print format and str methods work", {
   p <- proj_create("+proj=noop")
   expect_match(format(p), "\\+proj=noop")
-  expect_output(expect_identical(print(p), p), "<rlibproj")
-  expect_output(expect_identical(str(p), p), "<rlibproj")
+  expect_output(expect_identical(print(p), p), "<rproj")
+  expect_output(expect_identical(str(p), p), "<rproj")
 
   compound <- proj_create("EPSG:4326+5717")
   expect_output(print(compound), "\\$components")

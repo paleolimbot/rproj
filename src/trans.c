@@ -4,14 +4,14 @@
 
 #include "libproj.h"
 
-#include "rlibproj-context.h"
-#include "rlibproj-proj.h"
+#include "rproj-context.h"
+#include "rproj-proj.h"
 
 
 SEXP proj_c_trans_matrix(SEXP pj_xptr, SEXP x_sexp, SEXP direction_sexp,
                          SEXP verbose_sexp) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_pj_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
 
   int direction = INTEGER(direction_sexp)[0];
   int verbose = LOGICAL(verbose_sexp)[0];
@@ -46,7 +46,7 @@ SEXP proj_c_trans_matrix(SEXP pj_xptr, SEXP x_sexp, SEXP direction_sexp,
     // if there was a logged error, the first one would have been
     // swallowed by the error logger
     SEXP ctx_xptr = R_ExternalPtrTag(pj_xptr);
-    const char* logger_err = rlibproj_logger_error(ctx_xptr);
+    const char* logger_err = rproj_logger_error(ctx_xptr);
     if (logger_err != NULL) {
       REprintf("[first error was] %s\n", logger_err);
     }

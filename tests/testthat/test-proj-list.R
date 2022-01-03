@@ -1,14 +1,14 @@
 
 test_that("proj_list class works", {
   pl <- new_proj_list(list(proj_create("OGC:CRS84")))
-  expect_s3_class(pl, "rlibproj_proj_list")
-  expect_s3_class(pl[1], "rlibproj_proj_list")
+  expect_s3_class(pl, "rproj_proj_list")
+  expect_s3_class(pl[1], "rproj_proj_list")
   expect_identical(pl[[1]], unclass(pl)[[1]])
 
   pl[[1]] <- "EPSG:4326"
-  expect_s3_class(pl[[1]], "rlibproj_proj")
+  expect_s3_class(pl[[1]], "rproj_proj")
   pl[1] <- "EPSG:3995"
-  expect_s3_class(pl[[1]], "rlibproj_proj")
+  expect_s3_class(pl[[1]], "rproj_proj")
 
   expect_s3_class(data.frame(a = pl), "data.frame")
   expect_error(as.data.frame(pl), "data.frame")

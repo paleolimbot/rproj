@@ -6,7 +6,7 @@
 
 #include "libproj.h"
 
-#include "rlibproj-proj.h"
+#include "rproj-proj.h"
 
 typedef struct {
   PJ* pj;
@@ -16,10 +16,10 @@ typedef struct {
   int use_z_dst;
   int use_m_src;
   int use_m_dst;
-} rlibproj_trans_proj_t;
+} rproj_trans_proj_t;
 
-int rlibproj_trans_proj_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data) {
-  rlibproj_trans_proj_t* data = (rlibproj_trans_proj_t*) trans_data;
+int rproj_trans_proj_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data) {
+  rproj_trans_proj_t* data = (rproj_trans_proj_t*) trans_data;
 
   memcpy(data->coord.v, xyzm_in, 4 * sizeof(double));
   data->coord = proj_trans(data->pj, data->direction, data->coord);
@@ -35,27 +35,27 @@ int rlibproj_trans_proj_trans(R_xlen_t feature_id, const double* xyzm_in, double
   return WK_CONTINUE;
 }
 
-void rlibproj_trans_proj_finalize(void* trans_data) {
+void rproj_trans_proj_finalize(void* trans_data) {
   free(trans_data);
 }
 
 SEXP proj_c_trans(SEXP pj_xptr, SEXP use_z_sexp, SEXP use_m_sexp, SEXP direction_sexp) {
   // prepare data for C struct / validate args
   // we need the source and dest z/m info to invert properly
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
   int* use_z = LOGICAL(use_z_sexp);
   int* use_m = LOGICAL(use_m_sexp);
   int direction = INTEGER(direction_sexp)[0];
 
   // create the trans object
   wk_trans_t* trans = wk_trans_create();
-  trans->trans = &rlibproj_trans_proj_trans;
-  trans->finalizer = &rlibproj_trans_proj_finalize;
+  trans->trans = &rproj_trans_proj_trans;
+  trans->finalizer = &rproj_trans_proj_finalize;
 
-  rlibproj_trans_proj_t* data = (rlibproj_trans_proj_t*) malloc(sizeof(rlibproj_trans_proj_t));
+  rproj_trans_proj_t* data = (rproj_trans_proj_t*) malloc(sizeof(rproj_trans_proj_t));
   if (data == NULL) {
     free(trans); // # nocov
-    Rf_error("Failed to alloc rlibproj_trans_proj_t"); // # nocov
+    Rf_error("Failed to alloc rproj_trans_proj_t"); // # nocov
   }
 
   data->pj = pj;
@@ -75,23 +75,23 @@ SEXP proj_c_trans(SEXP pj_xptr, SEXP use_z_sexp, SEXP use_m_sexp, SEXP direction
 
 SEXP proj_c_trans_inverse(SEXP trans_xptr) {
   // very important that this is a trans pointing to this type of trans
-  if (!Rf_inherits(trans_xptr, "rlibproj_trans_proj")) {
+  if (!Rf_inherits(trans_xptr, "rproj_trans_proj")) {
     Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
   }
   wk_trans_t* trans_template = (wk_trans_t*) R_ExternalPtrAddr(trans_xptr);
 
   // create the trans object
   wk_trans_t* trans = wk_trans_create();
-  trans->trans = &rlibproj_trans_proj_trans;
-  trans->finalizer = &rlibproj_trans_proj_finalize;
+  trans->trans = &rproj_trans_proj_trans;
+  trans->finalizer = &rproj_trans_proj_finalize;
 
   // copy the data
-  rlibproj_trans_proj_t* data = (rlibproj_trans_proj_t*) malloc(sizeof(rlibproj_trans_proj_t));
+  rproj_trans_proj_t* data = (rproj_trans_proj_t*) malloc(sizeof(rproj_trans_proj_t));
   if (data == NULL) {
     free(trans); // # nocov
-    Rf_error("Failed to alloc rlibproj_trans_proj_t"); // # nocov
+    Rf_error("Failed to alloc rproj_trans_proj_t"); // # nocov
   }
-  memcpy(data, trans_template->trans_data, sizeof(rlibproj_trans_proj_t));
+  memcpy(data, trans_template->trans_data, sizeof(rproj_trans_proj_t));
 
   // reverse the direction
   if (data->direction == PJ_FWD) {
@@ -117,7 +117,7 @@ SEXP proj_c_trans_inverse(SEXP trans_xptr) {
 }
 
 SEXP proj_c_trans_get_pj(SEXP trans_xptr) {
-  if (!Rf_inherits(trans_xptr, "rlibproj_trans_proj")) {
+  if (!Rf_inherits(trans_xptr, "rproj_trans_proj")) {
     Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
   }
 
@@ -125,11 +125,11 @@ SEXP proj_c_trans_get_pj(SEXP trans_xptr) {
 }
 
 SEXP proj_c_trans_get_direction(SEXP trans_xptr) {
-  if (!Rf_inherits(trans_xptr, "rlibproj_trans_proj")) {
+  if (!Rf_inherits(trans_xptr, "rproj_trans_proj")) {
     Rf_error("`trans` must inherit from 'rlibrpoj_trans_proj'");
   }
 
   wk_trans_t* trans = (wk_trans_t*) R_ExternalPtrAddr(trans_xptr);
-  rlibproj_trans_proj_t* data = (rlibproj_trans_proj_t*) trans->trans_data;
+  rproj_trans_proj_t* data = (rproj_trans_proj_t*) trans->trans_data;
   return Rf_ScalarInteger(data->direction);
 }

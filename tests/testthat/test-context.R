@@ -1,6 +1,6 @@
 
 test_that("proj_context() works", {
-  expect_s3_class(proj_context(), "rlibproj_context")
+  expect_s3_class(proj_context(), "rproj_context")
   expect_match(format(proj_context()), "proj_context")
   expect_output(print(proj_context()), "proj_context")
 })
@@ -22,7 +22,7 @@ test_that("with_proj_context() works", {
 })
 
 test_that("proj_context_clone() works", {
-  expect_s3_class(proj_context_clone(), "rlibproj_context")
+  expect_s3_class(proj_context_clone(), "rproj_context")
 })
 
 test_that("proj_context_create() works", {

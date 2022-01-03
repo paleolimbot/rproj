@@ -1,18 +1,18 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rlibproj
+# rproj
 
 <!-- badges: start -->
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![R-CMD-check](https://github.com/paleolimbot/rlibproj/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/rlibproj/actions)
+[![R-CMD-check](https://github.com/paleolimbot/rproj/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/rproj/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/paleolimbot/rlibproj/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/rlibproj?branch=master)
+coverage](https://codecov.io/gh/paleolimbot/rproj/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/rproj?branch=master)
 <!-- badges: end -->
 
-The goal of rlibproj is to provide a literal wrapper around the PROJ C
+The goal of rproj is to provide a literal wrapper around the PROJ C
 API. It uses [libproj](https://github.com/paleolimbot/libproj) as a
 standalone copy of PROJ independent of a system installation.
 
@@ -22,7 +22,7 @@ You can install the development version from [R
 Universe](https://r-universe.dev/) with:
 
 ``` r
-install.packages("rlibproj", repos = "https://paleolimbot.r-universe.dev")
+install.packages("rproj", repos = "https://paleolimbot.r-universe.dev")
 ```
 
 ## Example
@@ -30,7 +30,7 @@ install.packages("rlibproj", repos = "https://paleolimbot.r-universe.dev")
 Create a transform and transform some coordinates:
 
 ``` r
-library(rlibproj)
+library(rproj)
 pipe <- proj_create_crs_to_crs("OGC:CRS84", "EPSG:3827")
 proj_trans(pipe, proj_coord(-64, 45))
 #>             x        y  z  t errno
@@ -42,7 +42,7 @@ interface](https://github.com/paleolimbot/crs2crs):
 
 ``` r
 library(crs2crs)
-crs_set_engine(crs_engine_rlibproj())
+crs_set_engine(crs_engine_rproj())
 
 library(sf)
 #> Linking to GEOS 3.8.1, GDAL 3.2.1, PROJ 7.2.1

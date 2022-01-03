@@ -80,7 +80,7 @@ proj_create_from_wkt <- function(wkt, options = character(), ctx = proj_context(
     all_error_text <- c(all_error_text, error_txt)
   }
 
-  if (!is.null(all_error_text) && inherits(raw[[1]], "rlibproj_proj")) {
+  if (!is.null(all_error_text) && inherits(raw[[1]], "rproj_proj")) {
     warning(paste0(all_error_text, collapse = "\n"), call. = FALSE)
   } else if (!is.null(all_error_text)) {
     stop(paste0(all_error_text, collapse = "\n"), call. = FALSE)
@@ -148,7 +148,7 @@ as_proj <- function(x, ..., ctx = proj_context()) {
 
 #' @rdname proj_create
 #' @export
-as_proj.rlibproj_proj <- function(x, ..., ctx = proj_context()) {
+as_proj.rproj_proj <- function(x, ..., ctx = proj_context()) {
   x
 }
 
@@ -331,20 +331,20 @@ proj_make_compact_definition <- function(pj, multiline = FALSE) {
 }
 
 #' @export
-format.rlibproj_proj <- function(x, ...) {
+format.rproj_proj <- function(x, ...) {
   proj_make_compact_definition(x)
 }
 
 #' @export
 #' @importFrom utils str
-str.rlibproj_proj <- function(object, ...) {
-  cat(sprintf("<rlibproj_proj at %s> %s\n", proj_xptr_addr(object), format(object)))
+str.rproj_proj <- function(object, ...) {
+  cat(sprintf("<rproj_proj at %s> %s\n", proj_xptr_addr(object), format(object)))
   invisible(object)
 }
 
 #' @export
-print.rlibproj_proj <- function(x, ...) {
-  cat(sprintf("<rlibproj_proj at %s>\n", proj_xptr_addr(x)))
+print.rproj_proj <- function(x, ...) {
+  cat(sprintf("<rproj_proj at %s>\n", proj_xptr_addr(x)))
 
   # there are some objects (e.g., fresh proj_create_crs_to_crs("NAD27", "NAD83"))
   # that can't get exported to JSON but do work with proj_info
@@ -435,22 +435,22 @@ print_parsed <- function(x, parsed = proj_as_projjson_parsed(x), indent = "") {
 }
 
 #' @export
-`[[.rlibproj_proj` <- function(x, i) {
+`[[.rproj_proj` <- function(x, i) {
   proj_as_projjson_parsed(x)[[i]]
 }
 
 #' @export
-`$.rlibproj_proj` <- function(x, i) {
+`$.rproj_proj` <- function(x, i) {
   l <- proj_as_projjson_parsed(x)
   do.call(`$`, c(list(l), i))
 }
 
 #' @export
-names.rlibproj_proj <- function(x) {
+names.rproj_proj <- function(x) {
   names(proj_as_projjson_parsed(x))
 }
 
 #' @export
-length.rlibproj_proj <- function(x) {
+length.rproj_proj <- function(x) {
   tryCatch(length(proj_as_projjson_parsed(x)), error = function(e) NULL)
 }

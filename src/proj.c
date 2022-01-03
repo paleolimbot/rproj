@@ -4,22 +4,22 @@
 #include <stdlib.h>
 #include "libproj.h"
 
-#include "rlibproj-context.h"
-#include "rlibproj-proj.h"
+#include "rproj-context.h"
+#include "rproj-proj.h"
 
 
-PJ_CONTEXT* rlibproj_ctx_from_pj_xptr(SEXP pj_xptr) {
+PJ_CONTEXT* rproj_ctx_from_pj_xptr(SEXP pj_xptr) {
   SEXP ctx_xptr = R_ExternalPtrTag(pj_xptr);
   return (PJ_CONTEXT*) R_ExternalPtrAddr(ctx_xptr);
 }
 
-PJ* rlibproj_pj_from_xptr(SEXP pj_xptr) {
+PJ* rproj_pj_from_xptr(SEXP pj_xptr) {
   if (TYPEOF(pj_xptr) != EXTPTRSXP) {
     Rf_error("`obj` must be an external pointer");
   }
 
-  if (!Rf_inherits(pj_xptr, "rlibproj_proj")) {
-    Rf_error("`obj` must inherit from 'rlibproj_context");
+  if (!Rf_inherits(pj_xptr, "rproj_proj")) {
+    Rf_error("`obj` must inherit from 'rproj_context");
   }
 
   PJ* pj = (PJ*) R_ExternalPtrAddr(pj_xptr);
@@ -32,7 +32,7 @@ PJ* rlibproj_pj_from_xptr(SEXP pj_xptr) {
   return pj;
 }
 
-void rlibproj_pj_stop_for_error(SEXP pj_xptr) {
+void rproj_pj_stop_for_error(SEXP pj_xptr) {
   // don't reset the errors here!
   PJ* pj = (PJ*) R_ExternalPtrAddr(pj_xptr);
   SEXP ctx_xptr = R_ExternalPtrTag(pj_xptr);
@@ -40,7 +40,7 @@ void rlibproj_pj_stop_for_error(SEXP pj_xptr) {
 
   int err = proj_errno(pj);
   const char* errstring = proj_context_errno_string(ctx, err);
-  const char* log_errstring = rlibproj_logger_error(ctx_xptr);
+  const char* log_errstring = rproj_logger_error(ctx_xptr);
   if (log_errstring == NULL && errstring == NULL) {
     Rf_error("Unknown error");
   } else if (log_errstring == NULL) {
@@ -61,48 +61,48 @@ void proj_xptr_destroy(SEXP proj_xptr) {
 }
 
 SEXP proj_c_create(SEXP ctx_xptr, SEXP definition_sexp) {
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
   const char* definition = Rf_translateCharUTF8(STRING_ELT(definition_sexp, 0));
 
   PJ* obj = proj_create(ctx, definition);
   if (obj == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   SEXP pj_xptr = PROTECT(R_MakeExternalPtr(obj, ctx_xptr, R_NilValue));
   R_RegisterCFinalizer(pj_xptr, &proj_xptr_destroy);
-  Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
   UNPROTECT(1);
   return pj_xptr;
 }
 
 SEXP proj_c_clone(SEXP pj_xptr, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
   PJ* new_pj = proj_clone(ctx, pj);
   if (new_pj == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   SEXP new_pj_xptr = PROTECT(R_MakeExternalPtr(new_pj, ctx_xptr, R_NilValue));
   R_RegisterCFinalizer(new_pj_xptr, &proj_xptr_destroy);
-  Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
   UNPROTECT(1);
   return new_pj_xptr;
 }
 
 SEXP proj_c_get_context(SEXP pj_xptr) {
-  rlibproj_pj_from_xptr(pj_xptr);
+  rproj_pj_from_xptr(pj_xptr);
   return R_ExternalPtrTag(pj_xptr);
 }
 
 SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr,
                               SEXP source_crs_xptr, SEXP target_crs_xptr,
                               SEXP area_sexp, SEXP options_sexp) {
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
-  PJ* source_crs = rlibproj_pj_from_xptr(source_crs_xptr);
-  PJ* target_crs = rlibproj_pj_from_xptr(target_crs_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
+  PJ* source_crs = rproj_pj_from_xptr(source_crs_xptr);
+  PJ* target_crs = rproj_pj_from_xptr(target_crs_xptr);
 
   // options is a NULL-terminated char[]
   const char** options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
@@ -126,18 +126,18 @@ SEXP proj_c_create_crs_to_crs(SEXP ctx_xptr,
   free(options);
 
   if (obj == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   SEXP pj_xptr = PROTECT(R_MakeExternalPtr(obj, ctx_xptr, R_NilValue));
   R_RegisterCFinalizer(pj_xptr, &proj_xptr_destroy);
-  Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
   UNPROTECT(1);
   return pj_xptr;
 }
 
 SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp) {
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
   const char* wkt = Rf_translateCharUTF8(STRING_ELT(wkt_sexp, 0));
 
   // options is a NULL-terminated char[]
@@ -164,13 +164,13 @@ SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp) {
     // wrap the PJ* pointer first so it will be destroyed if any of the below fails
     pj_xptr = PROTECT(R_MakeExternalPtr(obj, ctx_xptr, R_NilValue));
     R_RegisterCFinalizer(pj_xptr, &proj_xptr_destroy);
-    Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+    Rf_setAttrib(pj_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
   } else {
     // it's worth stopping here because the logger probably picked up an error
     // (e.g., bad options)
     if (warnings != NULL) proj_string_list_destroy(warnings);
     if (grammar_errors != NULL) proj_string_list_destroy(grammar_errors);
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   int n_warnings = 0;
@@ -201,12 +201,12 @@ SEXP proj_c_create_from_wkt(SEXP ctx_xptr, SEXP wkt_sexp, SEXP options_sexp) {
 }
 
 SEXP proj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
   PJ* source_crs = proj_get_source_crs(ctx, pj);
   if (source_crs == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   // the context associated with this PJ* is that of the original
@@ -214,50 +214,50 @@ SEXP proj_c_get_source_crs(SEXP pj_xptr, SEXP ctx_xptr) {
   SEXP ctx_pj = R_ExternalPtrTag(pj_xptr);
   SEXP source_crs_xptr = PROTECT(R_MakeExternalPtr(source_crs, ctx_pj, R_NilValue));
   R_RegisterCFinalizer(source_crs_xptr, &proj_xptr_destroy);
-  Rf_setAttrib(source_crs_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  Rf_setAttrib(source_crs_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
   UNPROTECT(1);
   return source_crs_xptr;
 }
 
 SEXP proj_c_normalize_for_visualization(SEXP pj_xptr, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
   PJ* pj_out = proj_normalize_for_visualization(ctx, pj);
   if (pj_out == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   SEXP pj_out_xptr = PROTECT(R_MakeExternalPtr(pj_out, ctx_xptr, R_NilValue));
   R_RegisterCFinalizer(pj_out_xptr, &proj_xptr_destroy);
-  Rf_setAttrib(pj_out_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  Rf_setAttrib(pj_out_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
   UNPROTECT(1);
   return pj_out_xptr;
 }
 
 SEXP proj_c_get_target_crs(SEXP pj_xptr, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
   PJ* target_crs = proj_get_target_crs(ctx, pj);
   if (target_crs == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   SEXP ctx_pj = R_ExternalPtrTag(pj_xptr);
   SEXP target_crs_xptr = PROTECT(R_MakeExternalPtr(target_crs, ctx_pj, R_NilValue));
   R_RegisterCFinalizer(target_crs_xptr, &proj_xptr_destroy);
-  Rf_setAttrib(target_crs_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+  Rf_setAttrib(target_crs_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
   UNPROTECT(1);
   return target_crs_xptr;
 }
 
 SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
   PJ_OBJ_LIST* pj_lst = proj_get_non_deprecated(ctx, pj);
   if (pj_lst == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   // pj_list could leak if any of the below fails
@@ -266,7 +266,7 @@ SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
     PJ* new_pj = proj_list_get(ctx, pj_lst, i);
     SEXP new_pj_xptr = PROTECT(R_MakeExternalPtr(new_pj, ctx_xptr, R_NilValue));
     R_RegisterCFinalizer(new_pj_xptr, &proj_xptr_destroy);
-    Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+    Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
     SET_VECTOR_ELT(out, i, new_pj_xptr);
     UNPROTECT(1);
   }
@@ -278,8 +278,8 @@ SEXP proj_c_get_non_deprecated(SEXP pj_xptr, SEXP ctx_xptr) {
 }
 
 SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
   const char* auth_name = Rf_translateCharUTF8(STRING_ELT(auth_name_sexp, 0));
 
@@ -287,7 +287,7 @@ SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr) {
   PJ_OBJ_LIST* pj_lst = proj_identify(ctx, pj, auth_name, NULL, &out_confidence);
   if (pj_lst == NULL) {
     if (out_confidence != NULL) proj_int_list_destroy(out_confidence);
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   // pj_lst and out_confidence could leak if any of these allocs fail
@@ -297,7 +297,7 @@ SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr) {
     PJ* new_pj = proj_list_get(ctx, pj_lst, i);
     SEXP new_pj_xptr = PROTECT(R_MakeExternalPtr(new_pj, ctx_xptr, R_NilValue));
     R_RegisterCFinalizer(new_pj_xptr, &proj_xptr_destroy);
-    Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rlibproj_proj"));
+    Rf_setAttrib(new_pj_xptr, R_ClassSymbol, Rf_mkString("rproj_proj"));
     SET_VECTOR_ELT(out, i, new_pj_xptr);
     SET_INTEGER_ELT(conf_out, i, out_confidence[i]);
     UNPROTECT(1);
@@ -315,7 +315,7 @@ SEXP proj_c_identify(SEXP pj_xptr, SEXP auth_name_sexp, SEXP ctx_xptr) {
 }
 
 SEXP proj_c_proj_info(SEXP pj_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
   PJ_PROJ_INFO info = proj_pj_info(pj);
 
   const char* names[] = {"id", "description", "definition", "has_inverse", "accuracy", ""};
@@ -344,26 +344,26 @@ SEXP proj_c_proj_info(SEXP pj_xptr) {
 }
 
 SEXP proj_c_get_type(SEXP pj_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
   return Rf_ScalarInteger(proj_get_type(pj));
 }
 
 SEXP proj_c_is_deprecated(SEXP pj_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
   return Rf_ScalarLogical(proj_is_deprecated(pj));
 }
 
 SEXP proj_c_is_crs(SEXP pj_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
   return Rf_ScalarLogical(proj_is_crs(pj));
 }
 
 SEXP proj_c_is_equivalent_to(SEXP pj_xptr, SEXP other_xptr,
                              SEXP criterion_sexp, SEXP ctx_xptr) {
 
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ* other = rlibproj_pj_from_xptr(other_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_xptr(ctx_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ* other = rproj_pj_from_xptr(other_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_xptr(ctx_xptr);
 
   int criterion = INTEGER(criterion_sexp)[0];
   int result = proj_is_equivalent_to_with_ctx(ctx, pj, other, criterion);
@@ -371,10 +371,10 @@ SEXP proj_c_is_equivalent_to(SEXP pj_xptr, SEXP other_xptr,
 }
 
 SEXP proj_c_get_remarks(SEXP pj_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
   const char* remarks = proj_get_remarks(pj);
   if (remarks == NULL) {
-    rlibproj_pj_stop_for_error(pj_xptr);
+    rproj_pj_stop_for_error(pj_xptr);
   }
 
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
@@ -384,10 +384,10 @@ SEXP proj_c_get_remarks(SEXP pj_xptr) {
 }
 
 SEXP proj_c_get_scope(SEXP pj_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
   const char* scope = proj_get_scope(pj);
   if (scope == NULL) {
-    rlibproj_pj_stop_for_error(pj_xptr);
+    rproj_pj_stop_for_error(pj_xptr);
   }
 
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
@@ -397,8 +397,8 @@ SEXP proj_c_get_scope(SEXP pj_xptr) {
 }
 
 SEXP proj_c_get_area_of_use(SEXP pj_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_pj_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
 
   SEXP area_sexp = PROTECT(Rf_allocVector(REALSXP, 4));
   double* area = REAL(area_sexp);
@@ -415,7 +415,7 @@ SEXP proj_c_get_area_of_use(SEXP pj_xptr) {
   );
 
   if (code != 1) {
-    rlibproj_pj_stop_for_error(pj_xptr);
+    rproj_pj_stop_for_error(pj_xptr);
   }
 
   if (name_ptr != NULL) {
@@ -430,8 +430,8 @@ SEXP proj_c_get_area_of_use(SEXP pj_xptr) {
 }
 
 SEXP proj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_pj_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
   int wkt_type = INTEGER(wkt_type_sexp)[0];
 
   const char** options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
@@ -443,7 +443,7 @@ SEXP proj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx
   const char* value = proj_as_wkt(ctx, pj, wkt_type, options);
   free(options);
   if (value == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
@@ -453,8 +453,8 @@ SEXP proj_c_as_wkt(SEXP pj_xptr, SEXP wkt_type_sexp, SEXP options_sexp, SEXP ctx
 }
 
 SEXP proj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP options_sexp, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_pj_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
   int proj_string_type = INTEGER(proj_string_type_sexp)[0];
 
   const char** options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
@@ -466,7 +466,7 @@ SEXP proj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP option
   const char* value = proj_as_proj_string(ctx, pj, proj_string_type, options);
   free(options);
   if (value == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
@@ -476,8 +476,8 @@ SEXP proj_c_as_proj_string(SEXP pj_xptr, SEXP proj_string_type_sexp, SEXP option
 }
 
 SEXP proj_c_as_projjson(SEXP pj_xptr,  SEXP options_sexp, SEXP ctx_xptr) {
-  PJ* pj = rlibproj_pj_from_xptr(pj_xptr);
-  PJ_CONTEXT* ctx = rlibproj_ctx_from_pj_xptr(pj_xptr);
+  PJ* pj = rproj_pj_from_xptr(pj_xptr);
+  PJ_CONTEXT* ctx = rproj_ctx_from_pj_xptr(pj_xptr);
 
   const char** options = malloc((Rf_length(options_sexp) + 1) * sizeof(char*));
   for (int i = 0; i < Rf_length(options_sexp); i++) {
@@ -488,7 +488,7 @@ SEXP proj_c_as_projjson(SEXP pj_xptr,  SEXP options_sexp, SEXP ctx_xptr) {
   const char* value = proj_as_projjson(ctx, pj, options);
   free(options);
   if (value == NULL) {
-    rlibproj_ctx_stop_for_error(ctx_xptr);
+    rproj_ctx_stop_for_error(ctx_xptr);
   }
 
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
