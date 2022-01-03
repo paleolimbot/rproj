@@ -9,6 +9,6 @@ as_proj.crs <- function(x, ...) {
   if (isTRUE(is.na(x$epsg))) {
     proj_create(x$input)
   } else {
-    paste0("EPSG:", x$epsg)
+    proj_create(paste0("EPSG:", x$epsg))
   }
 }
