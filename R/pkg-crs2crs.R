@@ -3,7 +3,6 @@
 #'
 #' @inheritParams proj_context
 #' @inheritParams crs2crs::crs_engine_null
-#' @inheritParams crs2crs::crs_proj_definition
 #' @param allow_ballpark Use `FALSE` to omit ballpark transformations
 #' @param accuracy The minimum desired accuracy for the transformation
 #' @param bbox The bounding box to use when searching for appropriate
